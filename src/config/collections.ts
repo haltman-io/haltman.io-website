@@ -7,14 +7,14 @@ export type CollectionItem = {
 
 export const collections: CollectionItem[] = [
   {
-    name: "EMAIL ALIAS MANAGER (browser)",
+    name: "MAIL.THC.ORG (BROWSER-EXTENSION)",
     href: "https://addons.mozilla.org/en-US/firefox/addon/email-alias-manager-free/",
-    description: "Mozilla Firefox extension to MANAGE ALIASES on the fly, powered by FREE MAIL FORWARDING.",
+    description: "Mozilla Firefox extension to MANAGE ALIASES on the fly, powered by MAIL.THC.ORG.",
     tag: "tool",
   },
   {
-    name: "FREE MAIL FORWARDING",
-    href: "https://forward.haltman.io/",
+    name: "MAIL.THC.ORG",
+    href: "https://mail.thc.org/",
     description: "This project allows you to set up an email forward from 17 domains to any email address.",
     tag: "tool",
   },
@@ -37,7 +37,7 @@ export const collections: CollectionItem[] = [
     tag: "tool",
   },
   {
-    name: "Phrack",
+    name: "PHRACK.ORG",
     href: "http://www.phrack.org",
     description:
       "Written by hackers, for hackers — a glimpse into the world just beyond what most people see.",

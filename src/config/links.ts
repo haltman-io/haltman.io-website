@@ -18,18 +18,28 @@ export const resourceLinks: CrewLink[] = [
     description: "Our official blog for sharing the news.",
   },
   {
+    href: "https://dev.haltman.io",
+    label: "dev.haltman.io",
+    description: "Our current knowledge base for documentation and guides.",
+  },
+  {
     href: "https://docs.haltman.io",
-    label: "docs.haltman.io",
-    description: "Our official knowledge base.",
+    label: "docs.haltman.io (LEGACY)",
+    description: "Our LEGACY knowledge base.",
   },
 ];
 
 /** Social / community channels */
 export const socialLinks: SocialLink[] = [
   {
-    href: "https://discord.gg/mCEs9TkdZ7",
-    label: "Discord",
-    simpleIconSlug: "discord",
+    href: "https://infosec.exchange/@haltman",
+    label: "Mastodon",
+    simpleIconSlug: "mastodon",
+  },
+  {
+    href: "https://bsky.app/profile/haltman.io",
+    label: "Bluesky",
+    simpleIconSlug: "bluesky",
   },
   {
     href: "https://t.me/haltman_group",
@@ -56,11 +66,6 @@ export const homepageLinks: CrewLink[] = [
     href: "https://t.me/haltman_group",
     label: "t.me/haltman_group",
     description: "Our official Telegram group.",
-  },
-  {
-    href: "https://discord.gg/mCEs9TkdZ7",
-    label: "dc.gg/mCEs9TkdZ7",
-    description: "Our official Discord group.",
   },
 ];
 
