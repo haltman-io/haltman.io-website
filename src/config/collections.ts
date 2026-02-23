@@ -38,7 +38,7 @@ export const collections: CollectionItem[] = [
   },
   {
     name: "PHRACK.ORG",
-    href: "http://www.phrack.org",
+    href: "https://www.phrack.org",
     description:
       "Written by hackers, for hackers — a glimpse into the world just beyond what most people see.",
     tag: "magazine",

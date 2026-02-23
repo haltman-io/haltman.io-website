@@ -3,6 +3,13 @@ import * as simpleIcons from "simple-icons";
 import { contactEmails, socialLinks } from "@/config/links";
 import { activeProjects } from "@/config/projects";
 
+const pageLinks = [
+  { href: "/", label: "HOME" },
+  { href: "/about", label: "ABOUT" },
+  { href: "/arts", label: "ARTS" },
+  { href: "/collections", label: "COLLECTIONS" },
+];
+
 function SimpleIcon({ slug, className }: { slug: string; className?: string }) {
   const key = `si${slug.charAt(0).toUpperCase()}${slug.slice(1)}` as keyof typeof simpleIcons;
   const icon = simpleIcons[key] as { path: string } | undefined;
@@ -27,7 +34,7 @@ function EndpointChip({
     <a
       href={href}
       {...(external && { target: "_blank", rel: "noopener noreferrer" })}
-      className="sys-chip"
+      className={external ? "sys-chip group" : "sys-chip"}
     >
       <span className="sys-chip-dot" />
       {label}
@@ -136,6 +143,19 @@ export function Footer() {
           </div>
 
           <div className="mt-4 border-t border-[var(--red-border)] pt-3">
+            <p className="text-[0.48rem] uppercase tracking-[0.14em] text-[var(--muted-foreground)] opacity-50">
+              Pages
+            </p>
+            <div className="mt-1.5 flex flex-wrap gap-1.5">
+              {pageLinks.map((link) => (
+                <EndpointChip
+                  key={link.href}
+                  href={link.href}
+                  label={link.label}
+                />
+              ))}
+            </div>
+
             <p className="text-[0.48rem] uppercase tracking-[0.12em] text-[var(--muted-foreground)] opacity-30">
               Powered by haltman.io &middot; BR
             </p>

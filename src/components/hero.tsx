@@ -18,7 +18,7 @@ const values = ["independent", "transparent", "free software"];
 export function Hero() {
   return (
     <section className="panel overflow-hidden rounded-lg mt-10">
-      <div className="grid gap-0 lg:grid-cols-12 padding">
+      <div className="grid gap-0 lg:grid-cols-12">
         {/* ── Left: Identity ── */}
         <div className="col-span-12 p-6 sm:p-8 lg:col-span-7 lg:p-10">
           <p className="label-xs">CYBER INDEPENDENT COLLECTIVE</p>

@@ -142,8 +142,8 @@ export function Manifesto() {
                   key={j}
                   className={
                     p.emphasis
-                      ? "text-[0.95rem] leading-relaxed text-[var(--foreground)] sm:text-base"
-                      : "text-sm leading-[1.85] text-[var(--muted-foreground)] sm:text-[0.875rem]"
+                      ? "whitespace-pre-line text-[0.95rem] leading-relaxed text-[var(--foreground)] sm:text-base"
+                      : "whitespace-pre-line text-sm leading-[1.85] text-[var(--muted-foreground)] sm:text-[0.875rem]"
                   }
                 >
                   {p.text}

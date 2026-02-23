@@ -4,7 +4,12 @@ export type BrandAsset = {
   kind: "approved-artifact";
 };
 
-export const brandAssets: BrandAsset[] = [
+const orderedBrandAssets: BrandAsset[] = [
+  {
+    src: "/brand/art-00.jpg",
+    alt: "Approved Haltman artwork 00",
+    kind: "approved-artifact",
+  },
   {
     src: "/brand/art-01.png",
     alt: "Approved Haltman artwork 01",
@@ -31,8 +36,8 @@ export const brandAssets: BrandAsset[] = [
     kind: "approved-artifact",
   },
   {
-    src: "/brand/art-06.png",
-    alt: "Approved Haltman artwork 06",
+    src: "/brand/art-6.webm",
+    alt: "Approved Haltman artwork 6",
     kind: "approved-artifact",
   },
   {
@@ -46,8 +51,8 @@ export const brandAssets: BrandAsset[] = [
     kind: "approved-artifact",
   },
   {
-    src: "/brand/art-09.png",
-    alt: "Approved Haltman artwork 09",
+    src: "/brand/art-9.jpg",
+    alt: "Approved Haltman artwork 9",
     kind: "approved-artifact",
   },
   {
@@ -55,4 +60,46 @@ export const brandAssets: BrandAsset[] = [
     alt: "Approved Haltman artwork 10",
     kind: "approved-artifact",
   },
+  {
+    src: "/brand/art-10.webm",
+    alt: "Approved Haltman artwork 10 (video)",
+    kind: "approved-artifact",
+  },
+  {
+    src: "/brand/art-11.mp4",
+    alt: "Approved Haltman artwork 11 (video)",
+    kind: "approved-artifact",
+  },
+  {
+    src: "/brand/art-12.mp4",
+    alt: "Approved Haltman artwork 12 (video)",
+    kind: "approved-artifact",
+  },
+  {
+    src: "/brand/art-13.png",
+    alt: "Approved Haltman artwork 13",
+    kind: "approved-artifact",
+  },
+  {
+    src: "/brand/art-14.png",
+    alt: "Approved Haltman artwork 14",
+    kind: "approved-artifact",
+  },
+  {
+    src: "/brand/art-15.jpg",
+    alt: "Approved Haltman artwork 15",
+    kind: "approved-artifact",
+  },
+  {
+    src: "/brand/art-16.png",
+    alt: "Approved Haltman artwork 16",
+    kind: "approved-artifact",
+  },
+  {
+    src: "/brand/art-17.png",
+    alt: "Approved Haltman artwork 17",
+    kind: "approved-artifact",
+  },
 ];
+
+export const brandAssets: BrandAsset[] = [...orderedBrandAssets].reverse();
