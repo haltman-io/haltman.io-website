@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono, Oxanium } from "next/font/google";
+import { JetBrains_Mono, Oxanium, Space_Grotesk } from "next/font/google";
 import { BackgroundFX } from "@/components/background-fx";
 import { SiteHeader } from "@/components/site-header";
 import "@/styles/globals.css";
@@ -15,15 +15,21 @@ const display = Oxanium({
   weight: ["400", "500", "600", "700"],
 });
 
+const sans = Space_Grotesk({
+  variable: "--font-body",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+});
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://haltman.io"),
   title: {
     default:
-      "Haltman.io — Independent Brazilian Hackers | Privacy, Free Software & Infrastructure",
-    template: "%s | Haltman.io",
+      "Haltman.IO — Independent Brazilian Hackers | Privacy, Free Software & Infrastructure",
+    template: "%s | Haltman.IO",
   },
   description:
-    "Haltman.io is an independent group of Brazilian hackers. Friends for over a decade, building public, privacy-first infrastructure and free software. No hype. No funding. No contracts.",
+    "Haltman.IO is an independent group of Brazilian hackers. Friends for over a decade, building public, privacy-first infrastructure and free software. No hype. No funding. No contracts.",
   keywords: [
     "Haltman",
     "haltman.io",
@@ -40,7 +46,7 @@ export const metadata: Metadata = {
     "infrastructure",
     "independent hackers",
   ],
-  authors: [{ name: "Haltman.io" }],
+  authors: [{ name: "Haltman.IO" }],
   referrer: "strict-origin-when-cross-origin",
   robots: {
     index: true,
@@ -53,9 +59,9 @@ export const metadata: Metadata = {
     canonical: "https://haltman.io/",
   },
   openGraph: {
-    siteName: "Haltman.io",
+    siteName: "Haltman.IO",
     type: "website",
-    title: "Haltman.io — Independent Brazilian Hackers",
+    title: "Haltman.IO — Independent Brazilian Hackers",
     description:
       "An independent Brazilian hacker group. Built by long-time friends. We publish public, privacy-first infrastructure and free software. No affiliation. No hiring. No compromise.",
     url: "https://haltman.io/",
@@ -63,13 +69,13 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/og.png",
-        alt: "Haltman.io — Independent Brazilian Hackers",
+        alt: "Haltman.IO — Independent Brazilian Hackers",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Haltman.io — Independent Brazilian Hackers",
+    title: "Haltman.IO — Independent Brazilian Hackers",
     description:
       "Independent Brazilian hackers. Friends for 10+ years. Public infrastructure, privacy-first services, free software. No hype. No funding. No contracts.",
     images: ["/og.png"],
@@ -96,7 +102,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${mono.variable} ${display.variable}`}>
+      <body
+        className={`${mono.variable} ${display.variable} ${sans.variable}`}
+      >
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -106,7 +114,7 @@ export default function RootLayout({
                 {
                   "@type": "Organization",
                   "@id": "https://haltman.io/#org",
-                  name: "Haltman.io",
+                  name: "Haltman.IO",
                   url: "https://haltman.io/",
                   description:
                     "Independent Brazilian hacker collective focused on privacy, free software and public infrastructure.",
@@ -127,7 +135,7 @@ export default function RootLayout({
                   "@type": "WebSite",
                   "@id": "https://haltman.io/#website",
                   url: "https://haltman.io/",
-                  name: "Haltman.io",
+                  name: "Haltman.IO",
                   publisher: { "@id": "https://haltman.io/#org" },
                 },
                 {
@@ -154,12 +162,7 @@ export default function RootLayout({
         </a>
         <div className="relative z-10 min-h-screen">
           <SiteHeader />
-          <main
-            id="content"
-            className="mx-auto mt-6 w-full max-w-[1200px] px-4 pb-16 sm:px-6 lg:px-8"
-          >
-            {children}
-          </main>
+          <main id="content">{children}</main>
         </div>
       </body>
     </html>

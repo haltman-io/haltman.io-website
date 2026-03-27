@@ -1,46 +1,256 @@
-export type CollectionItem = {
+export type CollectionCategory =
+  | "tool"
+  | "knowledge"
+  | "infrastructure"
+  | "community"
+  | "our-work";
+
+export type CollectionEntry = {
   name: string;
   href: string;
   description: string;
-  tag: "search-engine" | "magazine" | "tool" | "database" | "community" | "reference";
+  category: CollectionCategory;
+  tags: string[];
+  source?: string;
+  note?: string;
+  featured?: boolean;
+  legendary?: boolean;
+  crewApproved?: boolean;
 };
 
-export const collections: CollectionItem[] = [
-  {
-    name: "MAIL.THC.ORG (BROWSER-EXTENSION)",
-    href: "https://addons.mozilla.org/en-US/firefox/addon/email-alias-manager-free/",
-    description: "Mozilla Firefox extension to MANAGE ALIASES on the fly, powered by MAIL.THC.ORG.",
-    tag: "tool",
-  },
+export const categoryLabels: Record<CollectionCategory, string> = {
+  "our-work": "Our Work",
+  tool: "Tools",
+  infrastructure: "Infrastructure",
+  knowledge: "Knowledge",
+  community: "Community",
+};
+
+export const collections: CollectionEntry[] = [
+  // ═══════════════════════════════════════════
+  // THC / Associated
+  // ═══════════════════════════════════════════
   {
     name: "MAIL.THC.ORG",
     href: "https://mail.thc.org/",
-    description: "This project allows you to set up an email forward from 17 domains to any email address.",
-    tag: "tool",
+    description:
+      "Set up email forwards from 17 domains to any address. No tracking. No surveillance. Free.",
+    category: "tool",
+    tags: ["privacy", "email", "free"],
+    source: "THC",
+    crewApproved: true,
+    featured: true,
+  },
+  {
+    name: "MAIL.THC.ORG Extension",
+    href: "https://addons.mozilla.org/en-US/firefox/addon/email-alias-manager-free/",
+    description:
+      "Firefox extension to manage email aliases on the fly, powered by MAIL.THC.ORG.",
+    category: "tool",
+    tags: ["privacy", "email", "browser"],
+    source: "THC",
   },
   {
     name: "IP.THC.ORG",
     href: "https://ip.thc.org",
-    description: "World's largest Internet Domain Database. Currently Indexing 5.14+ billion domains.",
-    tag: "database",
+    description:
+      "World's largest Internet Domain Database. Currently indexing 5.14+ billion domains.",
+    category: "infrastructure",
+    tags: ["recon", "database", "osint"],
+    source: "THC",
+    legendary: true,
+    featured: true,
   },
   {
     name: "SEGFAULT.NET",
     href: "https://www.thc.org/segfault/",
-    description: "Disposable Root Servers.",
-    tag: "tool",
+    description:
+      "Disposable root servers. Spin up, use, destroy. No trace.",
+    category: "infrastructure",
+    tags: ["privacy", "servers", "disposable"],
+    source: "THC",
+    crewApproved: true,
   },
   {
     name: "GSOCKET.IO",
     href: "https://www.gsocket.io/",
-    description: "Connect like there is no firewall. Securely.",
-    tag: "tool",
+    description:
+      "Connect like there is no firewall. Securely. Peer-to-peer encrypted connections through any NAT.",
+    category: "tool",
+    tags: ["networking", "encryption", "tunneling"],
+    source: "THC",
+    crewApproved: true,
+  },
+
+  // ═══════════════════════════════════════════
+  // Haltman.IO Projects
+  // ═══════════════════════════════════════════
+  {
+    name: "Free Mail Forwarding",
+    href: "https://forward.haltman.io/",
+    description:
+      "Free email forwarder with 17 domains. Create unlimited aliases. No ads. No tracking.",
+    category: "our-work",
+    tags: ["privacy", "email", "service"],
+    source: "Haltman.IO",
+    featured: true,
   },
   {
-    name: "PHRACK.ORG",
+    name: "Brave-Search CLI",
+    href: "https://github.com/haltman-io/brave-search",
+    description:
+      "CLI tool for Brave Search API. Search the web from your terminal.",
+    category: "our-work",
+    tags: ["cli", "search", "tool"],
+    source: "Haltman.IO",
+  },
+  {
+    name: "IP-THC CLI",
+    href: "https://github.com/haltman-io/ip-thc",
+    description:
+      "CLI tool to query over 4.7 billion mapped assets from the terminal.",
+    category: "our-work",
+    tags: ["cli", "recon", "osint"],
+    source: "Haltman.IO",
+  },
+  {
+    name: "Sub-Alter",
+    href: "https://github.com/haltman-io/sub-alter",
+    description:
+      "Domain and subdomain discovery tool for reconnaissance.",
+    category: "our-work",
+    tags: ["cli", "recon", "dns"],
+    source: "Haltman.IO",
+  },
+  {
+    name: "Reverse-Whois",
+    href: "https://github.com/haltman-io/reverse-whois",
+    description:
+      "Reverse WHOIS lookup tool. Find all domains registered by an entity.",
+    category: "our-work",
+    tags: ["cli", "recon", "whois"],
+    source: "Haltman.IO",
+  },
+  {
+    name: "Search-Leaks",
+    href: "https://github.com/haltman-io/search-leaks",
+    description:
+      "Query data breach and leak statistics from the command line.",
+    category: "our-work",
+    tags: ["cli", "security", "breaches"],
+    source: "Haltman.IO",
+  },
+  {
+    name: "Haltman.IO Blog",
+    href: "https://blog.haltman.io",
+    description:
+      "Official blog. News, releases, and field notes from the crew.",
+    category: "our-work",
+    tags: ["blog", "news"],
+    source: "Haltman.IO",
+  },
+  {
+    name: "Haltman.IO Dev Docs",
+    href: "https://dev.haltman.io",
+    description: "Technical documentation, guides, and knowledge base.",
+    category: "our-work",
+    tags: ["docs", "technical"],
+    source: "Haltman.IO",
+  },
+
+  // ═══════════════════════════════════════════
+  // Knowledge / Culture
+  // ═══════════════════════════════════════════
+  {
+    name: "Phrack Magazine",
     href: "https://www.phrack.org",
     description:
-      "Written by hackers, for hackers — a glimpse into the world just beyond what most people see.",
-    tag: "magazine",
+      "Written by hackers, for hackers. The longest-running underground e-zine. Since 1985.",
+    category: "knowledge",
+    tags: ["magazine", "culture", "history"],
+    legendary: true,
+    featured: true,
+    note: "If you haven't read Phrack, you haven't done your homework.",
+  },
+  {
+    name: "The Conscience of a Hacker",
+    href: "http://phrack.org/issues/7/3.html",
+    description:
+      "The Hacker Manifesto by The Mentor. Published in Phrack Issue 7, 1986.",
+    category: "knowledge",
+    tags: ["manifesto", "culture", "history"],
+    source: "The Mentor",
+    legendary: true,
+    note: "The original manifesto. Every hacker should read this at least once.",
+  },
+  {
+    name: "The Jargon File",
+    href: "http://catb.org/jargon/",
+    description:
+      "Comprehensive compendium of hacker slang, culture, and folklore.",
+    category: "knowledge",
+    tags: ["culture", "reference", "history"],
+    legendary: true,
+  },
+
+  // ═══════════════════════════════════════════
+  // Privacy / Security Tools
+  // ═══════════════════════════════════════════
+  {
+    name: "Tor Project",
+    href: "https://www.torproject.org/",
+    description:
+      "Defend yourself against tracking and surveillance. Browse freely.",
+    category: "tool",
+    tags: ["privacy", "anonymity", "networking"],
+    crewApproved: true,
+  },
+  {
+    name: "Tails",
+    href: "https://tails.net/",
+    description:
+      "Portable operating system that protects against surveillance and censorship.",
+    category: "tool",
+    tags: ["privacy", "os", "anonymity"],
+    crewApproved: true,
+  },
+  {
+    name: "Signal",
+    href: "https://signal.org/",
+    description:
+      "State-of-the-art end-to-end encryption for private messaging.",
+    category: "tool",
+    tags: ["privacy", "messaging", "encryption"],
+    crewApproved: true,
+  },
+  {
+    name: "GnuPG",
+    href: "https://gnupg.org/",
+    description:
+      "Complete implementation of the OpenPGP standard. Encrypt everything.",
+    category: "tool",
+    tags: ["encryption", "pgp", "privacy"],
+  },
+
+  // ═══════════════════════════════════════════
+  // Communities / Organizations
+  // ═══════════════════════════════════════════
+  {
+    name: "Chaos Computer Club",
+    href: "https://www.ccc.de/en/",
+    description:
+      "Europe's largest association of hackers. Active since 1981.",
+    category: "community",
+    tags: ["community", "europe", "culture"],
+    legendary: true,
+  },
+  {
+    name: "Electronic Frontier Foundation",
+    href: "https://www.eff.org/",
+    description:
+      "Defending digital privacy, free speech, and innovation.",
+    category: "community",
+    tags: ["rights", "privacy", "legal"],
+    crewApproved: true,
   },
 ];

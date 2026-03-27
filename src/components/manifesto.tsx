@@ -70,33 +70,20 @@ const sections: ManifestoSection[] = [
   },
 ];
 
-
-function SectionHeader({ id, label }: { id: string; label: string }) {
-  return (
-    <div className="mb-5 flex items-center gap-3 sm:mb-6">
-      <span className="font-display text-xl font-bold text-[var(--red)] opacity-30 sm:text-2xl">
-        {id}
-      </span>
-      <div className="h-px flex-1 bg-[var(--red-border)]" />
-      <span className="label-xs">{label}</span>
-    </div>
-  );
-}
-
 export function Manifesto() {
   return (
-    <div className="space-y-6">
-      {/* ── Page header ── */}
-      <motion.section
-        initial={{ opacity: 0, y: -10 }}
+    <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="panel relative overflow-hidden rounded-lg mt-10"
+        transition={{ duration: 0.6 }}
+        className="relative pt-32 pb-16 sm:pt-40 sm:pb-20"
       >
-        {/* H watermark — visual anchor connecting to hero monogram */}
+        {/* H watermark */}
         <svg
           viewBox="0 0 200 200"
-          className="absolute right-6 top-1/2 h-36 w-36 -translate-y-1/2 text-white opacity-[0.025] sm:right-10 sm:h-52 sm:w-52"
+          className="pointer-events-none absolute right-0 top-1/2 h-48 w-48 -translate-y-1/2 text-white opacity-[0.025] sm:h-64 sm:w-64"
           aria-hidden
         >
           <path
@@ -105,45 +92,48 @@ export function Manifesto() {
           />
         </svg>
 
-        <div className="relative p-6 sm:p-8 lg:p-10">
-          <p className="label-xs">Manifesto</p>
+        <p className="label-xs">Manifesto</p>
 
-          <HyperText
-            duration={600}
-            className="font-display mt-3 text-3xl font-bold uppercase tracking-[0.06em] text-white sm:text-4xl xl:text-5xl"
-          >
-            ABOUT HALTMAN
-          </HyperText>
+        <HyperText
+          duration={600}
+          className="font-display mt-4 text-[clamp(2.5rem,6vw,5rem)] leading-[0.9] font-bold uppercase tracking-[0.03em] text-white"
+        >
+          ABOUT HALTMAN.IO
+        </HyperText>
 
-          <div className="mt-3 h-px w-32 bg-gradient-to-r from-[var(--red)] to-transparent" />
+        <div className="mt-6 h-px w-20 bg-gradient-to-r from-[var(--red)] to-transparent" />
 
-          <p className="mt-4 max-w-lg text-sm leading-relaxed text-[var(--muted-foreground)]">
-            Independent crew statement and operating principles.
-          </p>
-        </div>
-      </motion.section>
+        <p className="mt-6 max-w-xl text-base leading-relaxed text-[var(--muted-foreground)] sm:text-lg">
+          Independent crew statement and operating principles.
+        </p>
+      </motion.div>
 
-      {/* ── Manifesto sections ── */}
-      <div className="space-y-3">
+      {/* Sections */}
+      <div className="space-y-20 pb-24 sm:space-y-28 sm:pb-32">
         {sections.map((section, i) => (
           <motion.section
             key={section.id}
-            initial={{ opacity: 0, y: 14 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.15 }}
-            transition={{ duration: 0.45, delay: i * 0.05 }}
-            className="panel rounded-lg p-6 sm:p-8 lg:p-10"
+            transition={{ duration: 0.5, delay: i * 0.05 }}
           >
-            <SectionHeader id={section.id} label={section.label} />
+            <div className="mb-8 flex items-center gap-4">
+              <span className="font-display text-3xl font-bold text-[var(--red)] opacity-20 sm:text-4xl">
+                {section.id}
+              </span>
+              <div className="h-px flex-1 bg-[var(--red-border)]" />
+              <span className="label-xs">{section.label}</span>
+            </div>
 
-            <div className="max-w-3xl space-y-4">
+            <div className="max-w-3xl space-y-6">
               {section.paragraphs.map((p, j) => (
                 <p
                   key={j}
                   className={
                     p.emphasis
-                      ? "whitespace-pre-line text-[0.95rem] leading-relaxed text-[var(--foreground)] sm:text-base"
-                      : "whitespace-pre-line text-sm leading-[1.85] text-[var(--muted-foreground)] sm:text-[0.875rem]"
+                      ? "whitespace-pre-line text-lg leading-relaxed text-[var(--foreground)] sm:text-xl"
+                      : "whitespace-pre-line text-base leading-[1.85] text-[var(--muted-foreground)] sm:text-lg sm:leading-[1.85]"
                   }
                 >
                   {p.text}
@@ -154,16 +144,16 @@ export function Manifesto() {
         ))}
       </div>
 
-      {/* ── End marker ── */}
+      {/* End marker */}
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 0.1 }}
-        className="flex items-center gap-3 px-1"
+        className="flex items-center gap-3 pb-24"
       >
         <div className="h-px flex-1 bg-[var(--red-border)]" />
-        <span className="text-[0.48rem] uppercase tracking-[0.3em] text-[var(--muted-foreground)] opacity-40">
+        <span className="font-mono text-[0.625rem] uppercase tracking-[0.3em] text-[var(--muted-foreground)] opacity-40">
           end of transmission
         </span>
         <div className="h-px flex-1 bg-[var(--red-border)]" />

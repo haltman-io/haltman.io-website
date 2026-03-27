@@ -1,33 +1,36 @@
 import type { Metadata } from "next";
-import { ArtStrip } from "@/components/art-strip";
 import { Footer } from "@/components/footer";
+import { WorkArchive } from "@/components/work-archive";
 import { HyperText } from "@/components/ui/hyper-text";
 
 export const metadata: Metadata = {
-  title: "Arts",
+  title: "Our Work",
 };
 
-export default function ArtsPage() {
+export default function OurWorkPage() {
   return (
     <>
       <div className="mx-auto max-w-7xl px-6 pt-32 pb-4 sm:px-8 sm:pt-40 lg:px-12">
-        <p className="label-xs">Visual Archive</p>
+        <p className="label-xs">Public Output</p>
 
         <HyperText
           duration={600}
           className="font-display mt-4 text-[clamp(2.5rem,6vw,5rem)] leading-[0.9] font-bold uppercase tracking-[0.03em] text-white"
         >
-          ARTS
+          OUR WORK
         </HyperText>
 
         <div className="mt-6 h-px w-20 bg-gradient-to-r from-[var(--red)] to-transparent" />
 
         <p className="mt-6 max-w-xl text-base leading-relaxed text-[var(--muted-foreground)] sm:text-lg">
-          Haltman.IO approved artifacts and media archive.
+          Every tool, service, and release published by Haltman.IO.
+          Open source. Public by default.
         </p>
       </div>
 
-      <ArtStrip showTopNav={false} layout="grid" />
+      <div className="mt-12">
+        <WorkArchive />
+      </div>
       <Footer />
     </>
   );

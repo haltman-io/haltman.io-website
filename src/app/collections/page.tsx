@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { CollectionGrid } from "@/components/collection-grid";
+import { CollectionsArchive } from "@/components/collections-archive";
 import { Footer } from "@/components/footer";
 import { HyperText } from "@/components/ui/hyper-text";
 
@@ -9,26 +9,29 @@ export const metadata: Metadata = {
 
 export default function CollectionsPage() {
   return (
-    <div className="space-y-8">
-      <section className="panel rounded-lg p-6 sm:p-8 lg:p-10 mt-10">
-        <p className="label-xs">Curated Links</p>
+    <>
+      <div className="mx-auto max-w-7xl px-6 pt-32 pb-4 sm:px-8 sm:pt-40 lg:px-12">
+        <p className="label-xs">Curated Archive</p>
 
         <HyperText
           duration={600}
-          className="font-display mt-3 text-3xl font-bold uppercase tracking-[0.06em] text-white sm:text-4xl xl:text-5xl"
+          className="font-display mt-4 text-[clamp(2.5rem,6vw,5rem)] leading-[0.9] font-bold uppercase tracking-[0.03em] text-white"
         >
           COLLECTIONS
         </HyperText>
 
-        <div className="mt-3 h-px w-32 bg-gradient-to-r from-[var(--red)] to-transparent" />
+        <div className="mt-6 h-px w-20 bg-gradient-to-r from-[var(--red)] to-transparent" />
 
-        <p className="mt-4 max-w-lg text-sm leading-relaxed text-[var(--muted-foreground)]">
-          Tools, resources and references trusted and recommended by Haltman.io.
+        <p className="mt-6 max-w-xl text-base leading-relaxed text-[var(--muted-foreground)] sm:text-lg">
+          Tools, resources, references, and culture trusted by
+          Haltman.IO. Filtered, tagged, and annotated by the crew.
         </p>
-      </section>
+      </div>
 
-      <CollectionGrid />
+      <div className="mt-8">
+        <CollectionsArchive />
+      </div>
       <Footer />
-    </div>
+    </>
   );
 }

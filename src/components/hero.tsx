@@ -6,153 +6,114 @@ import { ArrowRight, ChevronRight } from "lucide-react";
 import { HyperText } from "@/components/ui/hyper-text";
 import { TypingAnimation } from "@/components/ui/typing-animation";
 
-const statusLines = [
-  "$ crew: brazilian hackers",
-  "$ mode: independent",
-  "$ policy: no hire / public work",
-  "$ signal: operational",
-];
-
-const values = ["independent", "transparent", "free software"];
-
 export function Hero() {
   return (
-    <section className="panel overflow-hidden rounded-lg mt-10">
-      <div className="grid gap-0 lg:grid-cols-12">
-        {/* ── Left: Identity ── */}
-        <div className="col-span-12 p-6 sm:p-8 lg:col-span-7 lg:p-10">
-          <p className="label-xs">CYBER INDEPENDENT COLLECTIVE</p>
+    <section className="relative overflow-hidden">
+      {/* H monogram watermark */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 flex items-center justify-end opacity-[0.03]"
+      >
+        <svg viewBox="0 0 200 200" className="h-[70vh] w-auto -mr-16 sm:-mr-8">
+          <path
+            d="M45 40H75V85H125V40H155V160H125V105H75V160H45Z"
+            fill="white"
+          />
+        </svg>
+      </div>
+
+      {/* Red glow */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute right-0 top-1/3 h-96 w-96 rounded-full bg-[radial-gradient(circle,rgba(255,42,42,0.06),transparent_70%)]"
+      />
+
+      <div className="relative mx-auto max-w-7xl px-6 pt-32 pb-20 sm:px-8 sm:pt-40 sm:pb-28 lg:px-12">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <p className="label-xs">Independent Collective</p>
 
           <HyperText
-            duration={600}
-            className="font-display mt-3 text-4xl leading-[0.9] font-black uppercase tracking-[0.08em] text-white sm:text-5xl xl:text-6xl"
+            duration={800}
+            className="font-display mt-5 text-[clamp(3rem,8vw,7rem)] leading-[0.85] font-bold uppercase tracking-[0.03em] text-white"
           >
-            HALTMAN
+            HALTMAN.IO
           </HyperText>
 
-          <p className="mt-4 max-w-lg text-sm leading-relaxed text-[var(--muted-foreground)] sm:text-base">
-            Haltman is a group of Brazilian hackers.{" "}<br />
-<br />
-            We build, break, audit, and publish.{" "}<br />
-            We do not sell platforms.{" "}<br />
-            We do not run franchises.{" "}<br />
-            We do not ask permission.{" "}<br />
-<br />
-            If you are looking for marketing, certifications, or corporate theater,{" "}
-            you are in the wrong place.{" "}
-          </p>
+          <div className="mt-6 h-px w-20 bg-gradient-to-r from-[var(--red)] to-transparent" />
 
-          <TypingAnimation
-            words={[
-                "NO FRANCHISE.",
-                "NO LICENSE.",
-                "NO CONTROL.",
-
-            ]}
-            typeSpeed={50}
-            deleteSpeed={28}
-            pauseDelay={1000}
-            loop
-            showCursor
-            className="mt-5 block text-[0.68rem] uppercase tracking-[0.18em] text-[var(--red)]"
-          />
-
-          <div className="mt-5 flex flex-wrap gap-2">
-            {values.map((v) => (
-              <span
-                key={v}
-                className="rounded-full border border-[var(--red-border)] bg-[var(--red-subtle)] px-2.5 py-1 text-[0.56rem] uppercase tracking-[0.14em] text-[var(--foreground)]"
-              >
-                {v}
-              </span>
-            ))}
+          <div className="mt-8 max-w-2xl space-y-4 text-base leading-relaxed text-[var(--muted-foreground)] sm:text-lg sm:leading-relaxed">
+            <p>
+              Haltman is a group of Brazilian hackers. Friends for over a decade,
+              building public, privacy-first infrastructure and free software.
+            </p>
+            <p>
+              We build, break, audit, and publish.
+              <br />
+              We do not sell platforms. We do not run franchises.
+              <br />
+              We do not ask permission.
+            </p>
           </div>
 
-          <div className="mt-7 flex flex-wrap gap-3">
+          <TypingAnimation
+            words={["NO FRANCHISE.", "NO LICENSE.", "NO CONTROL."]}
+            typeSpeed={50}
+            deleteSpeed={28}
+            pauseDelay={1200}
+            loop
+            showCursor
+            className="mt-8 block font-mono text-sm uppercase tracking-[0.14em] text-[var(--red)]"
+          />
+
+          <div className="mt-10 flex flex-wrap gap-4">
             <a
               href="#projects"
-              className="inline-flex items-center gap-2 rounded-sm border border-[var(--red)] bg-[rgba(255,42,42,0.15)] px-5 py-2.5 text-xs uppercase tracking-[0.14em] text-white transition-all hover:bg-[rgba(255,42,42,0.25)] hover:shadow-[0_0_20px_var(--red-glow)]"
+              className="inline-flex items-center gap-2.5 rounded-sm border border-[var(--red)] bg-[rgba(255,42,42,0.12)] px-6 py-3 text-sm font-medium uppercase tracking-[0.1em] text-white transition-all hover:bg-[rgba(255,42,42,0.22)] hover:shadow-[0_0_30px_var(--red-glow)]"
             >
-              Open Projects <ArrowRight className="size-3.5" />
+              Open Projects <ArrowRight className="size-4" />
             </a>
             <Link
               href="/about"
-              className="inline-flex items-center gap-2 rounded-sm border border-[var(--red-border)] bg-[rgba(255,255,255,0.03)] px-5 py-2.5 text-xs uppercase tracking-[0.14em] text-[var(--muted-foreground)] transition-all hover:border-[var(--red)] hover:text-white"
+              className="inline-flex items-center gap-2.5 rounded-sm border border-[var(--red-border)] bg-[rgba(255,255,255,0.03)] px-6 py-3 text-sm font-medium uppercase tracking-[0.1em] text-[var(--muted-foreground)] transition-all hover:border-[var(--red)] hover:text-white"
             >
-              Read The Manifesto <ChevronRight className="size-3.5" />
+              Read The Manifesto <ChevronRight className="size-4" />
             </Link>
           </div>
-        </div>
+        </motion.div>
 
-        {/* ── Right: System display ── */}
-        <div className="col-span-12 flex flex-col gap-0 border-t border-[var(--red-border)] lg:col-span-5 lg:border-l lg:border-t-0">
-          {/* Monogram */}
-          <div className="relative flex flex-1 items-center justify-center p-8 lg:p-10">
-            <motion.svg
-              viewBox="0 0 200 200"
-              className="h-40 w-40 sm:h-48 sm:w-48"
-              animate={{ rotate: [0, 1, -1, 0] }}
-              transition={{
-                duration: 10,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            >
-              <defs>
-                <linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#FF2A2A" />
-                  <stop offset="100%" stopColor="#7A0000" />
-                </linearGradient>
-              </defs>
-              <path
-                d="M45 40H75V85H125V40H155V160H125V105H75V160H45Z"
-                fill="url(#hg)"
-                stroke="rgba(255,42,42,0.3)"
-                strokeWidth="1"
-              />
-              <motion.circle
-                cx="100"
-                cy="100"
-                r="80"
-                fill="none"
-                stroke="rgba(255,42,42,0.15)"
-                strokeWidth="1"
-                strokeDasharray="4 8"
-                animate={{ rotate: [0, 360] }}
-                transition={{
-                  duration: 20,
-                  repeat: Infinity,
-                  ease: "linear",
-                }}
-                style={{ transformOrigin: "50% 50%" }}
-              />
-            </motion.svg>
-
-            {/* Glow behind monogram */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,42,42,0.08),transparent_60%)]" />
+        {/* Operational status strip */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="mt-20 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-[var(--red-border)] pt-6"
+        >
+          <div className="flex items-center gap-2">
+            <span className="relative flex size-2">
+              <span className="absolute inline-flex size-full animate-ping rounded-full bg-[var(--red)] opacity-50" />
+              <span className="relative inline-flex size-2 rounded-full bg-[var(--red)]" />
+            </span>
+            <span className="font-mono text-xs uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
+              Operational
+            </span>
           </div>
-
-          {/* Terminal status */}
-          <div className="border-t border-[var(--red-border)] p-5 sm:p-6">
-            <div className="rounded-md border border-[var(--red-border)] bg-[rgba(0,0,0,0.6)] p-4">
-              <div className="mb-3 flex items-center gap-1.5">
-                <span className="inline-block h-2 w-2 rounded-full bg-[var(--red)]" />
-                <span className="inline-block h-2 w-2 rounded-full bg-[var(--red)] opacity-60" />
-                <span className="inline-block h-2 w-2 rounded-full bg-[var(--red)] opacity-30" />
-              </div>
-              <div className="space-y-1">
-                {statusLines.map((line) => (
-                  <p
-                    key={line}
-                    className="text-[0.65rem] uppercase tracking-[0.1em] text-[var(--foreground)] opacity-80"
-                  >
-                    {line}
-                  </p>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
+          <span className="font-mono text-xs text-[var(--muted-foreground)] opacity-60">
+            6 public projects
+          </span>
+          <span className="font-mono text-xs text-[var(--muted-foreground)] opacity-60">
+            10+ years active
+          </span>
+          <span className="font-mono text-xs text-[var(--muted-foreground)] opacity-60">
+            BR
+          </span>
+          <span className="font-mono text-xs text-[var(--muted-foreground)] opacity-60">
+            Independent
+          </span>
+        </motion.div>
       </div>
     </section>
   );

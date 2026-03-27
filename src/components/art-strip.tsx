@@ -343,20 +343,20 @@ export function ArtStrip({ showTopNav = true, layout = "strip" }: ArtStripProps)
   };
 
   return (
-    <section className="space-y-4">
-      <div className="flex items-end justify-between px-1">
-        <div>
-          <p className="label-xs">Visual Archive</p>
-          <h2 className="mt-1 text-lg font-semibold text-[var(--foreground)]">
-            Crew artifacts
-          </h2>
-        </div>
-        {showTopNav && (
+    <section className="mx-auto max-w-7xl space-y-6 px-6 py-20 sm:px-8 sm:py-28 lg:px-12">
+      {showTopNav && (
+        <div className="flex items-end justify-between">
+          <div>
+            <p className="label-xs">Visual Archive</p>
+            <h2 className="font-display mt-2 text-xl font-bold uppercase tracking-[0.04em] text-white sm:text-2xl">
+              Crew Artifacts
+            </h2>
+          </div>
           <div className="flex gap-1">
             <button
               onClick={() => scroll("left")}
               disabled={isGridLayout}
-              className="inline-flex size-8 items-center justify-center rounded-md border border-[var(--red-border)] bg-[var(--card)] text-[var(--foreground)] transition hover:border-[var(--red)]"
+              className="inline-flex size-9 items-center justify-center rounded-md border border-[var(--red-border)] bg-[var(--card)] text-[var(--foreground)] transition hover:border-[var(--red)]"
               aria-label="Scroll left"
             >
               <ChevronLeft className="size-4" />
@@ -364,14 +364,14 @@ export function ArtStrip({ showTopNav = true, layout = "strip" }: ArtStripProps)
             <button
               onClick={() => scroll("right")}
               disabled={isGridLayout}
-              className="inline-flex size-8 items-center justify-center rounded-md border border-[var(--red-border)] bg-[var(--card)] text-[var(--foreground)] transition hover:border-[var(--red)]"
+              className="inline-flex size-9 items-center justify-center rounded-md border border-[var(--red-border)] bg-[var(--card)] text-[var(--foreground)] transition hover:border-[var(--red)]"
               aria-label="Scroll right"
             >
               <ChevronRight className="size-4" />
             </button>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       <Dialog
         open={dialogOpen}
@@ -406,8 +406,8 @@ export function ArtStrip({ showTopNav = true, layout = "strip" }: ArtStripProps)
           onPointerCancel={isGridLayout ? undefined : onStripPointerUp}
           className={
             isGridLayout
-              ? "grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4"
-              : `no-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto select-none ${isStripDragging ? "cursor-grabbing" : "cursor-grab"}`
+              ? "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+              : `no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto select-none ${isStripDragging ? "cursor-grabbing" : "cursor-grab"}`
           }
         >
           {visibleAssets.map((asset, index) => {
@@ -427,7 +427,7 @@ export function ArtStrip({ showTopNav = true, layout = "strip" }: ArtStripProps)
                   className={
                     isGridLayout
                       ? "group panel relative aspect-[4/3] w-full overflow-hidden rounded-lg text-left"
-                      : "group panel relative h-52 min-w-[16rem] flex-shrink-0 snap-start overflow-hidden rounded-lg text-left sm:h-56 sm:min-w-[20rem]"
+                      : "group panel relative h-60 min-w-[18rem] flex-shrink-0 snap-start overflow-hidden rounded-lg text-left sm:h-72 sm:min-w-[22rem]"
                   }
                 >
                   {!isVideoAsset && (
@@ -456,11 +456,11 @@ export function ArtStrip({ showTopNav = true, layout = "strip" }: ArtStripProps)
                     />
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-                  <div className="absolute bottom-3 left-3">
-                    <p className="text-[0.55rem] uppercase tracking-[0.18em] text-[var(--red)]">
+                  <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4">
+                    <p className="font-mono text-[0.625rem] uppercase tracking-[0.14em] text-[var(--red)]">
                       {asset.kind}
                     </p>
-                    <p className="mt-0.5 text-xs text-[var(--foreground)]">
+                    <p className="mt-1 text-sm text-[var(--foreground)]">
                       {fileName(asset.src)}
                     </p>
                   </div>
@@ -473,7 +473,7 @@ export function ArtStrip({ showTopNav = true, layout = "strip" }: ArtStripProps)
         <DialogContent
           showCloseButton
           onCloseAutoFocus={(event) => event.preventDefault()}
-          className="h-[70vh] w-[92vw] max-w-[92vw] border-[var(--red-border)] bg-[rgba(5,5,5,0.96)] p-3 backdrop-blur-xl sm:h-[70vh] sm:w-[70vw] sm:max-w-[70vw]"
+          className="h-[75vh] w-[92vw] max-w-[92vw] border-[var(--red-border)] bg-[rgba(5,5,5,0.96)] p-4 backdrop-blur-xl sm:h-[80vh] sm:w-[75vw] sm:max-w-[75vw]"
         >
           <DialogTitle className="sr-only">
             {selectedAsset?.alt}
@@ -643,7 +643,7 @@ export function ArtStrip({ showTopNav = true, layout = "strip" }: ArtStripProps)
               </div>
             )}
 
-            <div className="min-h-4 text-right text-[0.65rem] uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
+            <div className="min-h-4 text-right font-mono text-xs uppercase tracking-[0.12em] text-[var(--muted-foreground)]">
               {shareMessage || `${Math.round(zoom * 100)}% · ${visibleAssets.length > 0 ? selected + 1 : 0}/${visibleAssets.length}${isAutoAdvanceOn ? " · auto" : ""}`}
             </div>
           </div>
