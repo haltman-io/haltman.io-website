@@ -426,8 +426,8 @@ export function ArtStrip({ showTopNav = true, layout = "strip" }: ArtStripProps)
                   }}
                   className={
                     isGridLayout
-                      ? "group panel relative aspect-[4/3] w-full overflow-hidden rounded-lg text-left"
-                      : "group panel relative h-60 min-w-[18rem] flex-shrink-0 snap-start overflow-hidden rounded-lg text-left sm:h-72 sm:min-w-[22rem]"
+                      ? "group panel relative aspect-[4/3] w-full overflow-hidden rounded-lg text-left transition-transform active:scale-[0.98]"
+                      : "group panel relative h-60 min-w-[18rem] flex-shrink-0 snap-start overflow-hidden rounded-lg text-left transition-transform active:scale-[0.98] sm:h-72 sm:min-w-[22rem]"
                   }
                 >
                   {!isVideoAsset && (

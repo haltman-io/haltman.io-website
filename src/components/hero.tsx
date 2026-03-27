@@ -72,13 +72,13 @@ export function Hero() {
           <div className="mt-10 flex flex-wrap gap-4">
             <a
               href="#projects"
-              className="inline-flex items-center gap-2.5 rounded-sm border border-[var(--red)] bg-[rgba(255,42,42,0.12)] px-6 py-3 text-sm font-medium uppercase tracking-[0.1em] text-white transition-all hover:bg-[rgba(255,42,42,0.22)] hover:shadow-[0_0_30px_var(--red-glow)]"
+              className="inline-flex items-center gap-2.5 rounded-sm border border-[var(--red)] bg-[rgba(255,42,42,0.12)] px-6 py-3 text-sm font-medium uppercase tracking-[0.1em] text-white transition-all hover:bg-[rgba(255,42,42,0.22)] hover:shadow-[0_0_30px_var(--red-glow)] active:scale-95"
             >
               Open Projects <ArrowRight className="size-4" />
             </a>
             <Link
               href="/about"
-              className="inline-flex items-center gap-2.5 rounded-sm border border-[var(--red-border)] bg-[rgba(255,255,255,0.03)] px-6 py-3 text-sm font-medium uppercase tracking-[0.1em] text-[var(--muted-foreground)] transition-all hover:border-[var(--red)] hover:text-white"
+              className="inline-flex items-center gap-2.5 rounded-sm border border-[var(--red-border)] bg-[rgba(255,255,255,0.03)] px-6 py-3 text-sm font-medium uppercase tracking-[0.1em] text-[var(--muted-foreground)] transition-all hover:border-[var(--red)] hover:text-white active:scale-95"
             >
               Read The Manifesto <ChevronRight className="size-4" />
             </Link>

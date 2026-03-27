@@ -16,7 +16,7 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.3, delay: index * 0.05 }}
-      className="group flex items-start gap-3 border-b border-[rgba(255,42,42,0.08)] py-4 transition-colors hover:bg-[rgba(255,42,42,0.04)] sm:items-center sm:gap-5"
+      className="group flex items-start gap-3 border-b border-[rgba(255,42,42,0.08)] py-4 transition-all hover:bg-[rgba(255,42,42,0.04)] active:scale-[0.99] sm:items-center sm:gap-5"
     >
       {/* Red dash prefix */}
       <span
@@ -41,7 +41,7 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
         <span className="hidden rounded-full border border-[var(--red-border)] bg-[var(--red-subtle)] px-2 py-0.5 font-mono text-[0.5625rem] uppercase tracking-wider text-[var(--muted-foreground)] sm:inline-flex">
           {tagLabels[project.tag]}
         </span>
-        <ArrowUpRight className="size-4 text-[var(--muted-foreground)] opacity-0 transition-all group-hover:text-[var(--red)] group-hover:opacity-100" />
+        <ArrowUpRight className="size-4 text-[var(--muted-foreground)] opacity-0 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[var(--red)] group-hover:opacity-100" />
       </div>
     </motion.a>
   );
