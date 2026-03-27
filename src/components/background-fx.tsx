@@ -32,6 +32,17 @@ export function BackgroundFX() {
 
       {/* Vignette */}
       <div className="absolute inset-0 bg-[radial-gradient(circle,transparent_40%,rgba(0,0,0,0.5)_80%,rgba(0,0,0,0.85)_100%)]" />
+
+      {/* Technical Metadata Decals */}
+      <div className="fixed top-4 right-6 text-[0.55rem] font-mono text-[var(--red)] opacity-[0.35] uppercase tracking-[0.2em] pointer-events-none select-none hidden sm:block">
+        SYS_ID // 0x8A8F433E
+      </div>
+      <div className="fixed bottom-4 left-6 text-[0.55rem] font-mono text-[var(--red)] opacity-[0.35] uppercase tracking-[0.2em] pointer-events-none select-none hidden sm:block">
+        UPTIME &gt; 99.999%
+      </div>
+      <div className="fixed bottom-4 right-6 text-[0.55rem] font-mono text-[var(--red)] opacity-[0.35] uppercase tracking-[0.2em] pointer-events-none select-none hidden sm:block">
+        SECURE_LINK : ESTABLISHED
+      </div>
     </div>
   );
 }

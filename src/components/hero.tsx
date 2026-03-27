@@ -12,14 +12,17 @@ export function Hero() {
       {/* H monogram watermark */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 flex items-center justify-end opacity-[0.03]"
+        className="pointer-events-none absolute inset-0 hidden md:flex items-center justify-end opacity-[0.07] overflow-hidden"
       >
-        <svg viewBox="0 0 200 200" className="h-[70vh] w-auto -mr-16 sm:-mr-8">
-          <path
-            d="M45 40H75V85H125V40H155V160H125V105H75V160H45Z"
-            fill="white"
+        <div className="mx-auto flex w-full max-w-7xl justify-end px-6 sm:px-8 lg:px-12">
+          <motion.img 
+            src="/haltman-logo.png" 
+            alt=""
+            className="h-[45vh] w-auto antialiased object-contain mr-8 lg:mr-16"
+            animate={{ y: [0, -15, 0] }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
           />
-        </svg>
+        </div>
       </div>
 
       {/* Red glow */}
@@ -38,7 +41,7 @@ export function Hero() {
 
           <HyperText
             duration={800}
-            className="font-display mt-5 text-[clamp(3rem,8vw,7rem)] leading-[0.85] font-bold uppercase tracking-[0.03em] text-white"
+            className="font-display mt-5 text-[clamp(3rem,8vw,7rem)] leading-[0.85] font-bold uppercase tracking-[0.03em] text-white glitch-hover"
           >
             HALTMAN.IO
           </HyperText>

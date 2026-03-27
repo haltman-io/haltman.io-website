@@ -70,6 +70,11 @@
     @apply bg-background text-foreground antialiased;
     font-family: var(--font-body), system-ui, sans-serif;
     text-rendering: optimizeLegibility;
+    cursor: crosshair;
+  }
+
+  a, button, [role="button"] {
+    cursor: crosshair !important;
   }
 
   ::selection {
@@ -222,4 +227,25 @@
 
 .animate-grain {
   animation: grain-shift 8s steps(10) infinite;
+}
+
+@keyframes rgb-shift {
+  0%, 100% { text-shadow: 0 0 0 transparent; }
+  10% { text-shadow: 2px 0 var(--red), -2px 0 rgba(0, 255, 255, 0.5); }
+  20% { text-shadow: -2px 0 var(--red), 2px 0 rgba(0, 255, 255, 0.5); }
+  30% { text-shadow: 0 0 0 transparent; }
+  70% { text-shadow: 0 0 0 transparent; }
+  80% { text-shadow: 1px 0 var(--red), -1px 0 rgba(0, 255, 255, 0.5); }
+  90% { text-shadow: -1px 0 var(--red), 1px 0 rgba(0, 255, 255, 0.5); }
+}
+
+.glitch-hover {
+  position: relative;
+  display: inline-block;
+  transition: color 0.2s;
+}
+
+.glitch-hover:hover {
+  animation: rgb-shift 0.4s steps(2) infinite;
+  color: #fff;
 }

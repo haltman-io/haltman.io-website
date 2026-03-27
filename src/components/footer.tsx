@@ -1,6 +1,5 @@
 import * as simpleIcons from "simple-icons";
 import { contactEmails, resourceLinks, socialLinks } from "@/config/links";
-import { activeProjects } from "@/config/projects";
 
 function SimpleIcon({
   slug,
@@ -76,20 +75,7 @@ export function Footer() {
                 </a>
               ))}
             </div>
-            <p className="label-xs mb-4 mt-8">Projects</p>
-            <div className="flex flex-wrap gap-2">
-              {activeProjects.map((project) => (
-                <a
-                  key={project.href}
-                  href={project.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="chip"
-                >
-                  {project.shortLabel}
-                </a>
-              ))}
-            </div>
+
           </div>
 
           {/* Notice */}

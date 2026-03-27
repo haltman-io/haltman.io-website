@@ -60,7 +60,7 @@ export function SiteHeader() {
         {/* Brand */}
         <Link
           href="/"
-          className="font-display text-sm font-bold uppercase tracking-[0.2em] text-[var(--foreground)] transition-colors hover:text-white"
+          className="font-display text-sm font-bold uppercase tracking-[0.2em] text-[var(--foreground)] transition-colors hover:text-white glitch-hover"
         >
           HALTMAN.IO
         </Link>
