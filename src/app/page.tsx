@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { ArtStrip } from "@/components/art-strip";
 import { Doctrine } from "@/components/doctrine";
 import { Footer } from "@/components/footer";
 import { Hero } from "@/components/hero";
@@ -36,7 +35,6 @@ export default function HomePage() {
 
       <Doctrine />
       <ProjectGrid />
-      <ArtStrip />
 
       {/* Join CTA */}
       <section className="border-t border-[var(--red-border)] bg-[rgba(255,42,42,0.02)]">

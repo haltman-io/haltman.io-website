@@ -5,7 +5,6 @@ import { ArrowUpRight, Search } from "lucide-react";
 import { motion } from "motion/react";
 import {
   collections,
-  categoryLabels,
   type CollectionCategory,
   type CollectionEntry,
 } from "@/config/collections";
@@ -37,65 +36,33 @@ function CollectionCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.15 }}
       transition={{ duration: 0.3, delay: index * 0.04 }}
-      className="group panel flex flex-col rounded-lg p-6 transition-shadow hover:shadow-[0_0_40px_rgba(255,42,42,0.08)]"
+      className="group relative flex h-full min-h-52 flex-col overflow-hidden border border-(--red-border) bg-[linear-gradient(180deg,rgba(13,13,13,0.96),rgba(4,4,4,0.99))] px-5 py-5 shadow-[0_16px_32px_rgba(0,0,0,0.26)] transition-[transform,border-color,box-shadow,background-color] duration-200 hover:-translate-y-1 hover:border-[rgba(255,42,42,0.65)] hover:bg-[linear-gradient(180deg,rgba(18,18,18,0.98),rgba(7,7,7,1))] hover:shadow-[0_22px_44px_rgba(255,42,42,0.08)] focus-visible:outline-none focus-visible:border-(--red) focus-visible:shadow-[0_0_0_1px_var(--red)]"
     >
-      {/* Badges + Arrow */}
-      <div className="mb-4 flex items-start justify-between gap-2">
-        <div className="flex flex-wrap items-center gap-1.5">
-          {item.legendary && (
-            <span className="rounded-full border border-[var(--red)] bg-[rgba(255,42,42,0.12)] px-2.5 py-0.5 font-mono text-[0.625rem] uppercase tracking-wider text-[var(--red)]">
-              Legendary
-            </span>
-          )}
-          {item.crewApproved && (
-            <span className="rounded-full border border-[var(--red-border)] bg-[var(--red-subtle)] px-2.5 py-0.5 font-mono text-[0.625rem] uppercase tracking-wider text-[var(--muted-foreground)]">
-              Crew Approved
-            </span>
-          )}
-          {item.featured && !item.legendary && !item.crewApproved && (
-            <span className="rounded-full border border-[var(--red-border)] bg-[var(--red-subtle)] px-2.5 py-0.5 font-mono text-[0.625rem] uppercase tracking-wider text-[var(--muted-foreground)]">
-              Featured
-            </span>
-          )}
-        </div>
-        <ArrowUpRight className="size-4 shrink-0 text-[var(--muted-foreground)] opacity-0 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[var(--red)] group-hover:opacity-100" />
-      </div>
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(255,42,42,0.85),transparent)] opacity-70" />
+      <div className="pointer-events-none absolute left-0 top-7 h-16 w-px bg-[linear-gradient(180deg,rgba(255,42,42,0),rgba(255,42,42,0.75),rgba(255,42,42,0))]" />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,42,42,0.08),transparent_26%,transparent_72%,rgba(255,42,42,0.04))] opacity-80" />
 
-      {/* Name */}
-      <h3 className="text-base font-semibold text-white">{item.name}</h3>
+      <div className="relative z-10 flex h-full flex-col">
+        <h3 className="font-display mt-5 max-w-[17ch] text-[1.08rem] font-bold uppercase leading-[0.96] tracking-[0.02em] text-white transition-colors duration-200 group-hover:text-[#fff1f1] sm:text-[1.15rem]">
+          {item.name}
+        </h3>
 
-      {/* Source */}
-      {item.source && (
-        <p className="mt-1 font-mono text-xs uppercase tracking-wider text-[var(--muted-foreground)]">
-          {item.source}
+        <p className="mt-3 flex-1 text-sm leading-6 text-muted-foreground line-clamp-3">
+          {item.description}
         </p>
-      )}
 
-      {/* Description */}
-      <p className="mt-3 flex-1 text-sm leading-relaxed text-[var(--muted-foreground)]">
-        {item.description}
-      </p>
+        {item.note && (
+          <p className="mt-3 line-clamp-2 border-l-2 border-[rgba(255,42,42,0.55)] pl-3 text-sm italic leading-6 text-[#d0d0d0]">
+            &ldquo;{item.note}&rdquo;
+          </p>
+        )}
 
-      {/* Editorial note */}
-      {item.note && (
-        <p className="mt-3 border-l-2 border-[var(--red)] pl-3 text-sm italic text-[var(--muted-foreground)]">
-          &ldquo;{item.note}&rdquo;
-        </p>
-      )}
-
-      {/* Tags + Category */}
-      <div className="mt-4 flex flex-wrap items-center gap-1.5">
-        <span className="rounded-full border border-[var(--red-border)] bg-[var(--red-subtle)] px-2 py-0.5 font-mono text-[0.5625rem] uppercase tracking-wider text-[var(--red)]">
-          {categoryLabels[item.category]}
-        </span>
-        {item.tags.map((tag) => (
-          <span
-            key={tag}
-            className="rounded-full bg-[rgba(255,255,255,0.04)] px-2 py-0.5 font-mono text-[0.5625rem] text-[var(--muted-foreground)]"
-          >
-            #{tag}
+        <div className="mt-5 border-t border-[rgba(255,42,42,0.16)] pt-4">
+          <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-(--red) transition-transform duration-200 group-hover:translate-x-1">
+            Open
+            <ArrowUpRight className="size-3" />
           </span>
-        ))}
+        </div>
       </div>
     </motion.a>
   );
@@ -131,10 +98,16 @@ export function CollectionsArchive() {
   const showFeatured =
     activeCategory === "all" && searchQuery === "" && featured.length > 0;
 
-  const countForCategory = (cat: CollectionCategory | "all") =>
-    cat === "all"
-      ? collections.length
-      : collections.filter((c) => c.category === cat).length;
+  const archiveItems = useMemo(() => {
+    if (!showFeatured) {
+      return filtered;
+    }
+
+    const featuredHrefs = new Set(featured.map((item) => item.href));
+    return filtered.filter((item) => !featuredHrefs.has(item.href));
+  }, [featured, filtered, showFeatured]);
+
+  const displayedItems = showFeatured ? [...featured, ...archiveItems] : filtered;
 
   return (
     <div className="mx-auto max-w-7xl px-6 pb-24 sm:px-8 sm:pb-32 lg:px-12">
@@ -149,81 +122,43 @@ export function CollectionsArchive() {
               className={cn(
                 "rounded-full px-4 py-2 font-mono text-xs uppercase tracking-wider transition-all",
                 activeCategory === cat.value
-                  ? "border border-[var(--red)] bg-[rgba(255,42,42,0.12)] text-white"
-                  : "border border-[var(--red-border)] text-[var(--muted-foreground)] hover:border-[var(--red)] hover:text-white",
+                  ? "border border-(--red) bg-[rgba(255,42,42,0.12)] text-white"
+                  : "border border-(--red-border) text-muted-foreground hover:border-(--red) hover:text-white",
               )}
             >
               {cat.label}
-              <span className="ml-1.5 text-[var(--red)] opacity-60">
-                {countForCategory(cat.value)}
-              </span>
             </button>
           ))}
         </div>
 
         <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[var(--muted-foreground)]" />
+          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <input
             type="text"
             placeholder="Search tools, resources, tags..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-md border border-[var(--red-border)] bg-[rgba(255,255,255,0.03)] py-2.5 pl-10 pr-4 font-mono text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:border-[var(--red)] focus:outline-none"
+            className="w-full rounded-md border border-(--red-border) bg-[rgba(255,255,255,0.03)] py-2.5 pl-10 pr-4 font-mono text-sm text-foreground placeholder:text-muted-foreground focus:border-(--red) focus:outline-none"
           />
         </div>
       </div>
 
-      {/* Featured section */}
-      {showFeatured && (
-        <div className="mt-12">
-          <div className="mb-6 flex items-center gap-3">
-            <div className="h-px flex-1 bg-[var(--red-border)]" />
-            <span className="font-mono text-[0.625rem] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
-              Featured
-            </span>
-            <div className="h-px flex-1 bg-[var(--red-border)]" />
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {featured.map((item, i) => (
-              <CollectionCard key={item.href} item={item} index={i} />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Main grid */}
       <div className="mt-12">
-        {showFeatured && (
-          <div className="mb-6 flex items-center gap-3">
-            <div className="h-px flex-1 bg-[var(--red-border)]" />
-            <span className="font-mono text-[0.625rem] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
-              Archive
-            </span>
-            <div className="h-px flex-1 bg-[var(--red-border)]" />
-          </div>
-        )}
-
-        {filtered.length > 0 ? (
+        {displayedItems.length > 0 ? (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((item, i) => (
+            {displayedItems.map((item, i) => (
               <CollectionCard key={item.href} item={item} index={i} />
             ))}
           </div>
         ) : (
           <div className="py-16 text-center">
-            <p className="font-mono text-sm text-[var(--muted-foreground)]">
+            <p className="font-mono text-sm text-muted-foreground">
               No results found.
             </p>
           </div>
         )}
       </div>
 
-      {/* Count */}
-      <div className="mt-8 text-right">
-        <p className="font-mono text-xs uppercase tracking-wider text-[var(--muted-foreground)] opacity-50">
-          {filtered.length} of {collections.length} entries
-        </p>
-      </div>
     </div>
   );
 }

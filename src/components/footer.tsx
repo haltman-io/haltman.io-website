@@ -26,7 +26,7 @@ function SimpleIcon({
 
 export function Footer() {
   return (
-    <footer className="border-t border-[var(--red-border)]">
+    <footer id="site-footer" className="border-t border-[var(--red-border)]">
       <div className="mx-auto max-w-7xl px-6 py-16 sm:px-8 sm:py-20 lg:px-12">
         <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-3">
           {/* Contact */}

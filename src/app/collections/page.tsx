@@ -20,11 +20,12 @@ export default function CollectionsPage() {
           COLLECTIONS
         </HyperText>
 
-        <div className="mt-6 h-px w-20 bg-gradient-to-r from-[var(--red)] to-transparent" />
+        <div className="mt-6 h-px w-20 bg-linear-to-r from-(--red) to-transparent" />
 
-        <p className="mt-6 max-w-xl text-base leading-relaxed text-[var(--muted-foreground)] sm:text-lg">
-          Tools, resources, references, and culture trusted by
-          Haltman.IO. Filtered, tagged, and annotated by the crew.
+        <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+          Trusted tools, references, communities, and public resources worth
+          passing along. This page is a compact recommendation shelf, not a
+          showcase wall.
         </p>
       </div>
 

@@ -1,105 +1,11 @@
+import brandAssetsData from "@/data/brand-assets.json";
+
 export type BrandAsset = {
   src: string;
   alt: string;
   kind: "approved-artifact";
 };
 
-const orderedBrandAssets: BrandAsset[] = [
-  {
-    src: "/brand/art-00.jpg",
-    alt: "Approved Haltman artwork 00",
-    kind: "approved-artifact",
-  },
-  {
-    src: "/brand/art-01.png",
-    alt: "Approved Haltman artwork 01",
-    kind: "approved-artifact",
-  },
-  {
-    src: "/brand/art-02.png",
-    alt: "Approved Haltman artwork 02",
-    kind: "approved-artifact",
-  },
-  {
-    src: "/brand/art-03.png",
-    alt: "Approved Haltman artwork 03",
-    kind: "approved-artifact",
-  },
-  {
-    src: "/brand/art-04.png",
-    alt: "Approved Haltman artwork 04",
-    kind: "approved-artifact",
-  },
-  {
-    src: "/brand/art-05.png",
-    alt: "Approved Haltman artwork 05",
-    kind: "approved-artifact",
-  },
-  {
-    src: "/brand/art-6.webm",
-    alt: "Approved Haltman artwork 6",
-    kind: "approved-artifact",
-  },
-  {
-    src: "/brand/art-07.png",
-    alt: "Approved Haltman artwork 07",
-    kind: "approved-artifact",
-  },
-  {
-    src: "/brand/art-08.png",
-    alt: "Approved Haltman artwork 08",
-    kind: "approved-artifact",
-  },
-  {
-    src: "/brand/art-9.jpg",
-    alt: "Approved Haltman artwork 9",
-    kind: "approved-artifact",
-  },
-  {
-    src: "/brand/art-10.png",
-    alt: "Approved Haltman artwork 10",
-    kind: "approved-artifact",
-  },
-  {
-    src: "/brand/art-10.webm",
-    alt: "Approved Haltman artwork 10 (video)",
-    kind: "approved-artifact",
-  },
-  {
-    src: "/brand/art-11.mp4",
-    alt: "Approved Haltman artwork 11 (video)",
-    kind: "approved-artifact",
-  },
-  {
-    src: "/brand/art-12.mp4",
-    alt: "Approved Haltman artwork 12 (video)",
-    kind: "approved-artifact",
-  },
-  {
-    src: "/brand/art-13.png",
-    alt: "Approved Haltman artwork 13",
-    kind: "approved-artifact",
-  },
-  {
-    src: "/brand/art-14.png",
-    alt: "Approved Haltman artwork 14",
-    kind: "approved-artifact",
-  },
-  {
-    src: "/brand/art-15.jpg",
-    alt: "Approved Haltman artwork 15",
-    kind: "approved-artifact",
-  },
-  {
-    src: "/brand/art-16.png",
-    alt: "Approved Haltman artwork 16",
-    kind: "approved-artifact",
-  },
-  {
-    src: "/brand/art-17.png",
-    alt: "Approved Haltman artwork 17",
-    kind: "approved-artifact",
-  },
-];
-
-export const brandAssets: BrandAsset[] = [...orderedBrandAssets].reverse();
+export const brandAssets: BrandAsset[] = [
+  ...(brandAssetsData as BrandAsset[]),
+].reverse();

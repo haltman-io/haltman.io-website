@@ -4,46 +4,43 @@ import { useMemo } from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
-import { projects, tagLabels, type Project } from "@/config/projects";
+import { projects, type Project } from "@/config/projects";
 
-function ProjectRow({ project, index }: { project: Project; index: number }) {
+function ProjectListItem({
+  project,
+  index,
+}: {
+  project: Project;
+  index: number;
+}) {
   return (
-    <motion.a
-      href={project.href}
-      target="_blank"
-      rel="noopener noreferrer"
+    <motion.li
       initial={{ opacity: 0, x: -8 }}
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.3, delay: index * 0.05 }}
-      className="group flex items-start gap-3 border-b border-[rgba(255,42,42,0.08)] py-4 transition-all hover:bg-[rgba(255,42,42,0.04)] active:scale-[0.99] sm:items-center sm:gap-5"
+      className="border-b border-[rgba(255,42,42,0.08)] last:border-b-0"
     >
-      {/* Red dash prefix */}
-      <span
-        aria-hidden
-        className="mt-0.5 select-none font-mono text-[var(--red)] opacity-30 sm:mt-0"
+      <a
+        href={project.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="group grid gap-2.5 py-3.5 transition-colors duration-200 hover:bg-[rgba(255,42,42,0.03)] sm:grid-cols-[13rem_minmax(0,1fr)_auto] sm:items-center sm:gap-4"
       >
-        &ndash;
-      </span>
-
-      {/* Name + description */}
-      <div className="flex min-w-0 flex-1 flex-col gap-0.5 sm:flex-row sm:items-center sm:gap-4">
-        <span className="shrink-0 font-mono text-sm font-medium text-white transition-colors group-hover:text-[var(--red)] sm:w-48">
+        <h3 className="min-w-0 text-sm font-semibold text-white transition-colors duration-200 group-hover:text-[#fff1f1]">
           {project.name}
-        </span>
-        <span className="text-sm leading-relaxed text-[var(--muted-foreground)] sm:flex-1 sm:truncate">
-          {project.description}
-        </span>
-      </div>
+        </h3>
 
-      {/* Tag + arrow */}
-      <div className="flex shrink-0 items-center gap-3">
-        <span className="hidden rounded-full border border-[var(--red-border)] bg-[var(--red-subtle)] px-2 py-0.5 font-mono text-[0.5625rem] uppercase tracking-wider text-[var(--muted-foreground)] sm:inline-flex">
-          {tagLabels[project.tag]}
+        <p className="text-sm leading-6 text-muted-foreground sm:truncate">
+          {project.description}
+        </p>
+
+        <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-[#8f8f8f] transition-colors duration-200 group-hover:text-(--red)">
+          Open
+          <ArrowUpRight className="size-3.5 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
         </span>
-        <ArrowUpRight className="size-4 text-[var(--muted-foreground)] opacity-0 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[var(--red)] group-hover:opacity-100" />
-      </div>
-    </motion.a>
+      </a>
+    </motion.li>
   );
 }
 
@@ -78,30 +75,30 @@ export function ProjectGrid() {
           const baseIndex = grouped
             .slice(0, groupIdx)
             .reduce((sum, [, g]) => sum + g.length, 0);
+          const headingId = `home-project-year-${year}`;
 
           return (
-            <div key={year}>
-              {/* Year header */}
-              <div className="mb-1 flex items-baseline gap-1">
-                <span className="font-display text-3xl font-bold text-white sm:text-4xl">
+            <section key={year} aria-labelledby={headingId}>
+              <div className="mb-3 flex items-center gap-3">
+                <h3
+                  id={headingId}
+                  className="font-mono text-[10px] uppercase tracking-[0.2em] text-(--red)"
+                >
                   {year}
-                </span>
-                <span className="font-display text-3xl font-bold text-[var(--red)] sm:text-4xl">
-                  .
-                </span>
+                </h3>
+                <div className="h-px flex-1 bg-[rgba(255,42,42,0.12)]" />
               </div>
 
-              {/* Rows */}
-              <div>
+              <ul className="border-t border-[rgba(255,42,42,0.08)]" role="list">
                 {items.map((project, i) => (
-                  <ProjectRow
+                  <ProjectListItem
                     key={project.href}
                     project={project}
                     index={baseIndex + i}
                   />
                 ))}
-              </div>
-            </div>
+              </ul>
+            </section>
           );
         })}
       </div>

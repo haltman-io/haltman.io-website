@@ -1,38 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Haltman.IO Website
 
-![alt text](image.png)
+This is the Next.js project created exclusively to build the Haltman.IO website.
 
-## Getting Started
+## What Haltman.IO Is
 
-First, run the development server:
+Haltman.IO is an independent Brazilian hacker collective forged over a decade of shared experience, not hype, operating on mutual aid with no invoices and no growth, shaped by participation in and disillusionment with past groups, committed to transparency and free software, fully unaffiliated and free of inherited politics, publishing all work openly, and not available for hire.
+
+We are an old-school hacker group.
+
+## Why This Exists
+
+We did not find any layout that represented us, so we created this from scratch.
+
+It is open source. It may not follow the best code practices. It is released under [The Unlicense](./LICENSE). It is free and can be used by everyone.
+
+If you want to copy it, fork it, suggest improvements, use it for your own website, or sell it as part of some dev house, we do not care. You can.
+
+This shit only exists because we did not find what we want.
+
+And, direct from our hearts, to anyone who tries to limit open-source software through license restrictions: fuck you.
+
+## Development
+
+Install dependencies and start the development server:
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Other useful commands:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `npm run build`
+- `npm run start`
+- `npm run lint`

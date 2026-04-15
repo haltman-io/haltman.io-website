@@ -1,0 +1,151 @@
+---
+slug: hello-world
+title: Bye Hashnode, Hello Self-hosting
+subtitle: "We switched from Hashnode to self-hosting for one simple reason: we needed the blog to truly be ours."
+date: "2026-04-15"
+dateFormatted: Apr 15, 2026
+category: Infrastructure
+categorySlug: infrastructure
+author: extencil
+tags:
+  - label: Security
+    slug: security
+---
+
+Not rented. Not framed by someone else's UI. Not piped through someone else's telemetry. Ours. On our terms.
+
+Third-party platforms are comfortable until the day they start dictating the format, the flow, the identity, and the ceiling of what you can do. They publish. They don't let you build. And we didn't want to dump text into a pretty shell. We wanted control of the whole wire: route, render, content, structure, component, behavior, deploy. The lot.
+
+## THE REAL REASON
+
+Freedom. Plain and ugly.
+
+A platform with no mob of third-party scripts chewing on the users who come to read our stuff. Open source, because until we actually looked, we didn't even know we could run our own blog without leaning on them. Visual identity that is ours, not another clone of the same Hashnode skin everyone else wears.
+
+And one more reason they handed us for free: they killed their documentation product without telling anyone.
+
+
+> Also, just figured out
+> 
+> their documentation app was discontinued
+> no XYZ-days notice before the shutdown
+>
+> btw, i never managed to use that thing correctly
+> nice reminder to back up the data and self-host whenever possible
+
+
+That is the real shape of a "modern SaaS". One day it's a product. Next day it's a changelog entry about a shutdown. If you built on top, that's your problem now.
+
+## THC AND THE CONTRIBUTOR WALL
+
+Another push came from `iq.thc.org` -- The Hacker's Choice blog, also running on Hashnode. That's actually why we ended up there in the first place. Ou favorite blog, wrong cage.
+
+Contributing to an hacking blog on that thing is miserable. Contributors have to be invited. To be invited, they have to sign up. To sign up, they have to feed personal data to a company that dresses data collection as "integrations to improve our services". Curious? Hit F12, open the Network tab, load any page in their system. They scrape the soul out of whoever walks in.
+
+Our blog now lives inside our own website. No extra DNS record to babysit. Native Markdown, which is the syntax we actually like writing in. Anyone can read it, fork the repo, send a pull request, and after review the post lands. No personal data handed to third parties. No Hashnode signup. No Hashnode editor -- which is terrible. No blinking "USE AI TO IMPROVE YOUR TEXT" button flashing on screen like a Christmas tree wired to a bad PSU.
+
+## THE OTHER THING: IT IS A PRODUCT, NOT A BLOG
+
+The heavier reason to walk out: Hashnode is not a simple blog. It's a product. With monetization interests. And that shows in the parts they quietly let rot. Try integrating your site with their headless CMS and you'll find repos whose last meaningful update was somewhere back in 2024. Good luck. And if they decide to discontinue the blog product the same way they killed the docs one, your content dies with it.
+
+Their own blog system is full of dangling references. The UI tells you to "check the API", you click the link, nothing opens. Are we supposed to guess? Channel it? It's either black magic or sloppy work, and neither is acceptable. Their docs are bizarre and dated on top of that.
+
+We also added quick-share actions to our posts. An INCREDIBLY INCREDIBLE AND EXTREMELY HARD TO BUILD FEATURE -- sarcasm, but apparently it's hard, because these modern SaaS things keep failing to ship it -- that copies the post link and strips every tracking, marketing, and surveillance parameter off it before it hits the clipboard. Clean link. Nothing stapled to it.
+
+Our blog is open source. Released under [unlicense.org](https://unlicense.org). No third-party data collection. Actually maintained.
+
+* [https://github.com/haltman-io/haltman.io-website](https://github.com/haltman-io/haltman.io-website)
+
+## SO WE CUT THE MIDDLEMAN
+
+The blog now runs inside our own base. Same site. Same stack. Same control. No permission asked from an external platform. No third-party panel deciding how our content enters, renders, and lives.
+
+## WHAT CHANGED IN THE SITE
+
+Not a lift-and-shift. The site grew a new content and navigation layer.
+
+### A REAL BLOG, INSIDE THE APP
+
+A full blog area with a dynamic route for posts by slug, content in MDX, and our own layer for indexing, types, and rendering. Cleaner format to write, maintain, and evolve the content without an external CMS as the mandatory root.
+
+Components that actually matter to reading and using the thing:
+
+* post archive
+* dedicated post layout
+* table of contents
+* heading anchors
+* reading progress banner
+* sidebar actions on the post
+* share dialog
+* interactive code block
+
+The blog stopped being a loose page with text glued to it. It has structure, navigation, and parts you can reuse.
+
+### MEMBERS AREA
+
+A new members section. Dynamic route by slug, its own profile layout, dedicated types, content kept apart. Less garbage shoved into static pages and scattered configs.
+
+### DATA OUT OF LOOSE CONFIG, INTO JSON
+
+Part of the site data was migrated into `src/data/` -- brand assets, collections, links, projects. Important cleanup. Less improvised TypeScript pretending to be content when it's just data. Less noise. Less duct tape.
+
+### NEW ASSETS
+
+New visual assets dropped in too: GIFs and auxiliary files that compose the identity of the site better than what was there.
+
+## BASE LAYER: CONTENT, BUILD, DEPENDENCIES
+
+The base got moved around too.
+
+### PNPM OUT, NPM IN
+
+The old `pnpm` workspace was removed. Project re-aligned to `npm`, lockfile regenerated. No glamour. Rail maintenance. Less friction in the current flow.
+
+### NEXT.JS PREPPED FOR MDX
+
+Next config flipped from `next.config.ts` to `next.config.mjs`, and a new layer for MDX components landed. Markdown with actual control, not a raw or generic render dumped on the page.
+
+### NEW DEPENDENCIES
+
+Added deps around MDX, parsing, frontmatter, highlighting, and editing:
+
+* `@next/mdx`
+* `@mdx-js/*`
+* `remark-frontmatter`
+
+The point is not to stack packages for decoration. The point is a decent writing pipeline, with clean render and real room for editing inside the site's own ecosystem.
+
+## WHAT GOT REWRITTEN ON THE WAY
+
+This migration dragged heavy refactors into parts of the app that already existed. Files touched hard, among others:
+
+* `join-hub.tsx`
+* `site-header.tsx`
+* `collections.ts`
+* `work-archive.tsx`
+* `collections-archive.tsx`
+* `globals.css`
+* `brand-assets.ts`
+* `projects.ts`
+
+Not cosmetic. Structural surgery. A chunk of what was there had to be adjusted so the site wouldn't look like a part hammered into the wrong socket.
+
+## WHY IT MATTERS
+
+Because technical content should not be held hostage by an external platform when you already have the structure to host it, render it, and keep it alive at home.
+
+Self-hosting is not a fetish. It's control.
+
+Control of the route.
+Control of the format.
+Control of the deploy.
+Control of the identity.
+Control of what enters and what breaks.
+
+Hashnode was useful while it was useful. Now the blog had to stop being borrowed space and start being a native part of our own system.
+
+So we did it.
+
+This post exists to mark the point: the new blog is not just a new blog. It's the content coming back inside our own stack, where it should have been from the start.
+
+The machine always tells the truth. It's about time the blog did too.
