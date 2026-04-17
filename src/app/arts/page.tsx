@@ -1,11 +1,14 @@
-import type { Metadata } from "next";
 import { ArtStrip } from "@/components/art-strip";
 import { Footer } from "@/components/footer";
 import { HyperText } from "@/components/ui/hyper-text";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Arts",
-};
+  description:
+    "Visual archive from the Haltman.IO collective. Posters, graphics, and experiments published openly.",
+  path: "/arts",
+});
 
 export default function ArtsPage() {
   return (

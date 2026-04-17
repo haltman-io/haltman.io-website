@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { MemberProfileLayout } from "@/components/member-profile-layout";
 import { getMemberProfileBySlug, getMemberStaticParams } from "@/lib/members";
+import { pageMetadata } from "@/lib/seo";
 import { useMDXComponents } from "../../../../mdx-components";
 
 type MemberProfilePageProps = {
@@ -26,10 +27,14 @@ export async function generateMetadata({
     return {};
   }
 
-  return {
-    title: `${member.meta.displayName} | Members`,
-    description: `${member.meta.displayName} (${member.meta.name}) • ${member.meta.role}`,
-  };
+  return pageMetadata({
+    title: `${member.meta.displayName} — ${member.meta.role}`,
+    description: `${member.meta.displayName} (${member.meta.name}) • ${member.meta.role} at Haltman.IO.`,
+    path: `/members/${member.meta.slug}`,
+    type: "profile",
+    image: member.meta.avatar,
+    imageAlt: `${member.meta.displayName} — Haltman.IO`,
+  });
 }
 
 export default async function MemberProfilePage({

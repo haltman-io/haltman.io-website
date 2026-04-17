@@ -2,6 +2,14 @@ import type { Metadata } from "next";
 import { JetBrains_Mono, Oxanium, Space_Grotesk } from "next/font/google";
 import { BackgroundFX } from "@/components/background-fx";
 import { SiteHeader } from "@/components/site-header";
+import {
+  DEFAULT_OG_IMAGE,
+  SITE_DEFAULT_DESCRIPTION,
+  SITE_DEFAULT_TITLE,
+  SITE_NAME,
+  SITE_TITLE_TEMPLATE,
+  SITE_URL,
+} from "@/lib/seo";
 import "@/styles/globals.css";
 
 const mono = JetBrains_Mono({
@@ -22,14 +30,12 @@ const sans = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://haltman.io"),
+  metadataBase: new URL(SITE_URL),
   title: {
-    default:
-      "Haltman.IO — Independent Brazilian Hackers | Privacy, Free Software & Infrastructure",
-    template: "%s | Haltman.IO",
+    default: SITE_DEFAULT_TITLE,
+    template: SITE_TITLE_TEMPLATE,
   },
-  description:
-    "Haltman.IO is an independent group of Brazilian hackers. Friends for over a decade, building public, privacy-first infrastructure and free software. No hype. No funding. No contracts.",
+  description: SITE_DEFAULT_DESCRIPTION,
   keywords: [
     "Haltman",
     "haltman.io",
@@ -46,7 +52,7 @@ export const metadata: Metadata = {
     "infrastructure",
     "independent hackers",
   ],
-  authors: [{ name: "Haltman.IO" }],
+  authors: [{ name: SITE_NAME }],
   referrer: "strict-origin-when-cross-origin",
   robots: {
     index: true,
@@ -56,29 +62,33 @@ export const metadata: Metadata = {
     "max-video-preview": -1,
   },
   alternates: {
-    canonical: "https://haltman.io/",
+    canonical: `${SITE_URL}/`,
   },
   openGraph: {
-    siteName: "Haltman.IO",
+    siteName: SITE_NAME,
     type: "website",
-    title: "Haltman.IO — Independent Brazilian Hackers",
-    description:
-      "An independent Brazilian hacker group. Built by long-time friends. We publish public, privacy-first infrastructure and free software. No affiliation. No hiring. No compromise.",
-    url: "https://haltman.io/",
+    title: {
+      default: SITE_DEFAULT_TITLE,
+      template: SITE_TITLE_TEMPLATE,
+    },
+    description: SITE_DEFAULT_DESCRIPTION,
+    url: `${SITE_URL}/`,
     locale: "en_US",
     images: [
       {
-        url: "/og.png",
-        alt: "Haltman.IO — Independent Brazilian Hackers",
+        url: DEFAULT_OG_IMAGE,
+        alt: `${SITE_NAME} — Independent Brazilian Hackers`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Haltman.IO — Independent Brazilian Hackers",
-    description:
-      "Independent Brazilian hackers. Friends for 10+ years. Public infrastructure, privacy-first services, free software. No hype. No funding. No contracts.",
-    images: ["/og.png"],
+    title: {
+      default: SITE_DEFAULT_TITLE,
+      template: SITE_TITLE_TEMPLATE,
+    },
+    description: SITE_DEFAULT_DESCRIPTION,
+    images: [DEFAULT_OG_IMAGE],
   },
   icons: {
     icon: [

@@ -1,14 +1,18 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Doctrine } from "@/components/doctrine";
 import { Footer } from "@/components/footer";
 import { Hero } from "@/components/hero";
 import { ProjectGrid } from "@/components/project-grid";
+import { pageMetadata, SITE_DEFAULT_TITLE } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Home",
-};
+export const metadata = pageMetadata({
+  title: SITE_DEFAULT_TITLE,
+  titleAbsolute: true,
+  description:
+    "Haltman.IO is an independent Brazilian hacker collective. Friends for over a decade, publishing privacy-first infrastructure and free software. No hype. No funding. No contracts.",
+  path: "/",
+});
 
 export default function HomePage() {
   return (

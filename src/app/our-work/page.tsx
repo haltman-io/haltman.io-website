@@ -1,11 +1,14 @@
-import type { Metadata } from "next";
 import { Footer } from "@/components/footer";
 import { WorkArchive } from "@/components/work-archive";
 import { HyperText } from "@/components/ui/hyper-text";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Our Work",
-};
+  description:
+    "Public output from the Haltman.IO collective. Infrastructure, free software, and privacy-first services we run and maintain.",
+  path: "/our-work",
+});
 
 export default function OurWorkPage() {
   return (

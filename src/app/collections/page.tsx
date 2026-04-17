@@ -1,11 +1,14 @@
-import type { Metadata } from "next";
 import { CollectionsArchive } from "@/components/collections-archive";
 import { Footer } from "@/components/footer";
 import { HyperText } from "@/components/ui/hyper-text";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Collections",
-};
+  description:
+    "Curated archive from the Haltman.IO collective. Notes, references, and materials worth keeping.",
+  path: "/collections",
+});
 
 export default function CollectionsPage() {
   return (

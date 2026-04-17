@@ -1,11 +1,14 @@
-import type { Metadata } from "next";
 import { Footer } from "@/components/footer";
 import { JoinHub } from "@/components/join-hub";
 import { HyperText } from "@/components/ui/hyper-text";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Join",
-};
+  description:
+    "We do not recruit — we recognize. How to reach the Haltman.IO collective if your values and work align with ours.",
+  path: "/join",
+});
 
 export default function JoinPage() {
   return (

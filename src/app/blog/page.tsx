@@ -1,12 +1,15 @@
-import type { Metadata } from "next";
 import { BlogArchive } from "@/components/blog-archive";
 import { Footer } from "@/components/footer";
 import { HyperText } from "@/components/ui/hyper-text";
 import { getBlogArchivePosts } from "@/lib/blog";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Blog",
-};
+  description:
+    "Technical articles, infrastructure updates, and thoughts from the Haltman.IO collective. Published openly.",
+  path: "/blog",
+});
 
 export default async function BlogPage() {
   const posts = await getBlogArchivePosts();

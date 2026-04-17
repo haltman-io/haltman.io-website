@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BlogPostLayout } from "@/components/blog-post-layout";
 import { getBlogPostBySlug, getBlogStaticParams } from "@/lib/blog";
+import { pageMetadata } from "@/lib/seo";
 import { useMDXComponents } from "../../../../mdx-components";
 
 type BlogPostPageProps = {
@@ -26,10 +27,15 @@ export async function generateMetadata({
     return {};
   }
 
-  return {
+  return pageMetadata({
     title: post.meta.title,
     description: post.meta.subtitle,
-  };
+    path: `/blog/${post.meta.slug}`,
+    type: "article",
+    publishedTime: post.meta.date,
+    authors: [post.meta.author.displayName],
+    keywords: post.meta.tags.map((tag) => tag.label),
+  });
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
