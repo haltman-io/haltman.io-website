@@ -2,7 +2,7 @@
   {
     "name": "MAIL.THC.ORG",
     "href": "https://mail.thc.org/",
-    "description": "Set up email forwards from 17 domains to any address. No tracking. No surveillance. Free.",
+    "description": "Set up email forwards from 51 domains to any address. No tracking. No surveillance. Free.",
     "category": "tool",
     "tags": ["privacy", "email", "free"],
     "source": "THC",
@@ -48,7 +48,7 @@
   {
     "name": "Free Mail Forwarding",
     "href": "https://forward.haltman.io/",
-    "description": "Free email forwarder with 17 domains. Create unlimited aliases. No ads. No tracking.",
+    "description": "Free email forwarder with 51 domains. Create unlimited aliases. No ads. No tracking.",
     "category": "our-work",
     "tags": ["privacy", "email", "service"],
     "source": "Haltman.IO",

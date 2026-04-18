@@ -4,6 +4,8 @@ import { Doctrine } from "@/components/doctrine";
 import { Footer } from "@/components/footer";
 import { Hero } from "@/components/hero";
 import { ProjectGrid } from "@/components/project-grid";
+import { RecentBlogPosts } from "@/components/recent-blog-posts";
+import { getBlogArchivePosts } from "@/lib/blog";
 import { pageMetadata, SITE_DEFAULT_TITLE } from "@/lib/seo";
 
 export const metadata = pageMetadata({
@@ -14,7 +16,9 @@ export const metadata = pageMetadata({
   path: "/",
 });
 
-export default function HomePage() {
+export default async function HomePage() {
+  const latestPosts = (await getBlogArchivePosts()).slice(0, 3);
+
   return (
     <>
       <Hero />
@@ -38,6 +42,7 @@ export default function HomePage() {
       </section>
 
       <Doctrine />
+      <RecentBlogPosts posts={latestPosts} />
       <ProjectGrid />
 
       {/* Join CTA */}
