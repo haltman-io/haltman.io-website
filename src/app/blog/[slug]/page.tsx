@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BlogPostLayout } from "@/components/blog-post-layout";
+import { createBlogMDXComponents } from "@/lib/blog-mdx-components";
 import { getBlogPostBySlug, getBlogStaticParams } from "@/lib/blog";
 import { pageMetadata } from "@/lib/seo";
-import { useMDXComponents } from "../../../../mdx-components";
 
 type BlogPostPageProps = {
   params: Promise<{
@@ -50,7 +50,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   return (
     <BlogPostLayout meta={post.meta} sourceFilename={post.filename}>
-      <Content components={useMDXComponents()} />
+      <Content components={createBlogMDXComponents(post.filename)} />
     </BlogPostLayout>
   );
 }

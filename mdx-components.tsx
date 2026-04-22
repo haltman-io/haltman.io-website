@@ -3,6 +3,9 @@ import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import type { MDXComponents } from "mdx/types";
 import { cn } from "@/lib/utils";
 
+const mdxImageFrameClassName =
+  "border border-(--red-border) bg-[#080808] shadow-[inset_0_1px_0_rgba(255,255,255,0.03),0_18px_40px_rgba(0,0,0,0.38)]";
+
 function extractText(node: ReactNode): string {
   if (typeof node === "string" || typeof node === "number") {
     return String(node);
@@ -55,6 +58,48 @@ function createHeading(
 const paragraphClassName =
   "mb-6 text-[1rem] leading-8 text-[var(--muted-foreground)] sm:text-[1.03rem]";
 
+type ContentImageProps = ComponentPropsWithoutRef<"img">;
+
+type PostImageProps = ContentImageProps & {
+  caption?: ReactNode;
+};
+
+export function ContentImage({
+  className,
+  alt = "",
+  loading = "lazy",
+  decoding = "async",
+  ...props
+}: ContentImageProps) {
+  return (
+    <img
+      alt={alt}
+      loading={loading}
+      decoding={decoding}
+      className={cn("h-auto max-w-full", className)}
+      {...props}
+    />
+  );
+}
+
+export function PostImage({ caption, className, ...props }: PostImageProps) {
+  const visibleCaption = caption ?? props.alt;
+
+  return (
+    <figure className="my-10">
+      <ContentImage
+        className={cn("block w-full", mdxImageFrameClassName, className)}
+        {...props}
+      />
+      {visibleCaption ? (
+        <figcaption className="mx-auto mt-3 max-w-176 text-center text-[0.92rem] leading-6 italic text-muted-foreground sm:text-[0.97rem]">
+          {visibleCaption}
+        </figcaption>
+      ) : null}
+    </figure>
+  );
+}
+
 function Paragraph({
   className,
   children,
@@ -79,12 +124,47 @@ function Paragraph({
         className: cn(className, child.props.className),
       });
     }
+
+    if (
+      isValidElement<{ className?: string }>(child) &&
+      (child.type === "img" || child.type === ContentImage)
+    ) {
+      return cloneElement(child, {
+        ...child.props,
+        className: cn(
+          "my-10 block w-full",
+          mdxImageFrameClassName,
+          className,
+          child.props.className,
+        ),
+      });
+    }
   }
 
   return (
     <p className={cn(paragraphClassName, className)} {...props}>
       {children}
     </p>
+  );
+}
+
+function Table({
+  className,
+  children,
+  ...props
+}: ComponentPropsWithoutRef<"table">) {
+  return (
+    <div className="my-10 overflow-x-auto border border-(--red-border) bg-[#080808] shadow-[inset_0_1px_0_rgba(255,255,255,0.03),0_18px_40px_rgba(0,0,0,0.32)]">
+      <table
+        className={cn(
+          "min-w-full border-collapse text-left text-[0.95rem] leading-7 text-muted-foreground",
+          className,
+        )}
+        {...props}
+      >
+        {children}
+      </table>
+    </div>
   );
 }
 
@@ -144,6 +224,46 @@ const components: MDXComponents = {
       {...props}
     />
   ),
+  table: Table,
+  thead: ({ className, ...props }) => (
+    <thead
+      className={cn(
+        "border-b border-(--red-border) bg-[rgba(255,42,42,0.08)] text-white",
+        className,
+      )}
+      {...props}
+    />
+  ),
+  tbody: ({ className, ...props }) => (
+    <tbody className={cn("[&_tr:last-child]:border-b-0", className)} {...props} />
+  ),
+  tr: ({ className, ...props }) => (
+    <tr
+      className={cn(
+        "border-b border-[rgba(255,42,42,0.14)] align-top transition-colors hover:bg-[rgba(255,255,255,0.015)]",
+        className,
+      )}
+      {...props}
+    />
+  ),
+  th: ({ className, ...props }) => (
+    <th
+      className={cn(
+        "px-4 py-3 font-mono text-[0.72rem] font-semibold tracking-[0.12em] text-(--red) sm:px-5",
+        className,
+      )}
+      {...props}
+    />
+  ),
+  td: ({ className, ...props }) => (
+    <td
+      className={cn(
+        "px-4 py-3 align-top text-[0.95rem] leading-7 text-muted-foreground sm:px-5",
+        className,
+      )}
+      {...props}
+    />
+  ),
   pre: ({ className, ...props }) => (
     <pre
       className={cn(
@@ -168,6 +288,8 @@ const components: MDXComponents = {
       />
     );
   },
+  img: ContentImage,
+  PostImage,
 };
 
 export function useMDXComponents(

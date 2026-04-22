@@ -17,6 +17,8 @@ screenshots
 # next.js
 /.next/
 /out/
+/.generated/
+/public/__generated/
 
 # production
 /build
@@ -33,6 +35,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel

@@ -62,3 +62,45 @@ Useful commands:
 * `npm run build`
 * `npm run start`
 * `npm run lint`
+* `npm run blog-images:prepare`
+
+## Blog Image Adapter
+
+The blog can resolve local MDX image references through an adapter layer before `dev` and `build`.
+
+Use relative paths inside blog posts, for example:
+
+```mdx
+<PostImage
+	src="./my-post/diagram.svg"
+	alt="Short accessible description"
+	caption="Longer explanation rendered below the image."
+/>
+```
+
+Markdown image syntax also works:
+
+```mdx
+![Packet flow diagram](./my-post/diagram.svg)
+```
+
+By default, the adapter runs in local mode. It copies referenced blog images into `/public/__generated/blog-images/` and resolves them during rendering, which keeps the source images outside `public` while preserving a working open-source build.
+
+To enable Cloudflare Hosted Images instead of the local fallback, set:
+
+```bash
+BLOG_IMAGE_ADAPTER=cloudflare
+CLOUDFLARE_IMAGES_ACCOUNT_ID=your_account_id
+CLOUDFLARE_IMAGES_API_TOKEN=your_images_api_token
+# optional, defaults to public
+CLOUDFLARE_IMAGES_VARIANT=public
+```
+
+When Cloudflare mode is enabled, the adapter:
+
+* uploads local blog images to Cloudflare Images before the Next.js build starts
+* avoids duplicate uploads by using deterministic custom IDs derived from the file path and content hash
+* reuses an existing hosted image when that exact asset is already present
+* resolves the hosted delivery URL into the static render that follows
+
+Generated adapter artifacts are written to `/.generated/blog-image-manifest.json` and ignored from git.

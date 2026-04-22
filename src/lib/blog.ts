@@ -8,6 +8,7 @@ import { evaluate } from "@mdx-js/mdx";
 import type { MDXComponents } from "mdx/types";
 import * as runtime from "react/jsx-runtime";
 import remarkFrontmatter from "remark-frontmatter";
+import remarkGfm from "remark-gfm";
 import remarkMdxFrontmatter from "remark-mdx-frontmatter";
 import { getMemberProfileByName } from "@/lib/members";
 import type {
@@ -184,6 +185,7 @@ async function compileBlogPost(source: string): Promise<BlogPostModule> {
     remarkPlugins: [
       remarkFrontmatter,
       [remarkMdxFrontmatter, { name: "frontmatter" }],
+      remarkGfm,
     ],
   })) as BlogPostModule;
 }

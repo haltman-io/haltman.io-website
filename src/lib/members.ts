@@ -8,6 +8,7 @@ import { evaluate } from "@mdx-js/mdx";
 import type { MDXComponents } from "mdx/types";
 import * as runtime from "react/jsx-runtime";
 import remarkFrontmatter from "remark-frontmatter";
+import remarkGfm from "remark-gfm";
 import remarkMdxFrontmatter from "remark-mdx-frontmatter";
 import type { MemberProfileMeta } from "@/lib/member-types";
 
@@ -108,6 +109,7 @@ async function compileMemberProfile(source: string): Promise<MemberProfileModule
     remarkPlugins: [
       remarkFrontmatter,
       [remarkMdxFrontmatter, { name: "frontmatter" }],
+      remarkGfm,
     ],
   })) as MemberProfileModule;
 }

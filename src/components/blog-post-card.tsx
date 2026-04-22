@@ -7,19 +7,15 @@ import type { BlogPostEntry } from "@/lib/blog-types";
 
 export function BlogPostCard({
   post,
-  index,
 }: {
   post: BlogPostEntry;
-  index: number;
 }) {
-  const serial = String(index + 1).padStart(2, "0");
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.15 }}
-      transition={{ duration: 0.3, delay: index * 0.04 }}
+      transition={{ duration: 0.3 }}
     >
       <Link
         href={`/blog/${post.slug}`}
@@ -32,10 +28,7 @@ export function BlogPostCard({
         <div className="relative z-10 flex h-full flex-col">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--red)]">
-                Post {serial}
-              </p>
-              <div className="mt-2 inline-flex border border-[var(--red-border)] bg-[rgba(255,42,42,0.08)] px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-[#f6c0c0]">
+              <div className="inline-flex border border-[var(--red-border)] bg-[rgba(255,42,42,0.08)] px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-[#f6c0c0]">
                 {post.category}
               </div>
             </div>
@@ -55,11 +48,11 @@ export function BlogPostCard({
 
           <div className="mt-6 h-px bg-[linear-gradient(90deg,rgba(255,42,42,0.45),rgba(255,42,42,0.04))]" />
 
-          <h3 className="font-display mt-6 max-w-[14ch] text-[1.25rem] font-bold uppercase leading-[0.96] tracking-[0.02em] text-white transition-colors group-hover:text-[#fff1f1] sm:text-[1.4rem]">
+          <h3 className="font-display mt-6 max-w-[14ch] line-clamp-3 text-[1.25rem] font-bold uppercase leading-[0.96] tracking-[0.02em] text-white transition-colors group-hover:text-[#fff1f1] sm:text-[1.4rem]">
             {post.title}
           </h3>
 
-          <p className="mt-4 max-w-[34ch] flex-1 text-sm leading-7 text-[var(--muted-foreground)] line-clamp-4">
+          <p className="mt-4 max-w-[34ch] flex-1 text-sm leading-7 text-[var(--muted-foreground)] line-clamp-3">
             {post.description}
           </p>
 

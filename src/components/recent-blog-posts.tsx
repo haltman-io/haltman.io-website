@@ -40,8 +40,8 @@ export function RecentBlogPosts({ posts }: { posts: BlogPostEntry[] }) {
         </div>
 
         <div className="mt-12 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {posts.map((post, index) => (
-            <BlogPostCard key={post.slug} post={post} index={index} />
+          {posts.map((post) => (
+            <BlogPostCard key={post.slug} post={post} />
           ))}
         </div>
       </div>

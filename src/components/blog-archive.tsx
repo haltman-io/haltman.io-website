@@ -84,8 +84,8 @@ export function BlogArchive({ posts }: { posts: BlogPostEntry[] }) {
       <div className="mt-12">
         {filtered.length > 0 ? (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((post, i) => (
-              <BlogPostCard key={post.slug} post={post} index={i} />
+            {filtered.map((post) => (
+              <BlogPostCard key={post.slug} post={post} />
             ))}
           </div>
         ) : (

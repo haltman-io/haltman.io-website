@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "node ./scripts/run-next-with-blog-images.mjs dev",
+    "build": "node ./scripts/run-next-with-blog-images.mjs build",
+    "blog-images:prepare": "node ./scripts/prepare-blog-images.mjs",
     "start": "next start",
     "lint": "eslint"
   },
@@ -27,6 +28,7 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "remark-frontmatter": "^5.0.0",
+    "remark-gfm": "^4.0.1",
     "remark-mdx-frontmatter": "^5.2.0",
     "shiki": "^4.0.2",
     "simple-icons": "^16.7.0",
