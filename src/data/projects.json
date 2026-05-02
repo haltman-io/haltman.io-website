@@ -1,32 +1,58 @@
 [
   {
-    "name": "Free Mail Forwarding",
-    "href": "https://forward.haltman.io/",
-    "description": "Free email forwarder with 51 domains. Unlimited aliases. No tracking.",
+    "name": "0.metasploit.io",
+    "href": "https://0.metasploit.io/",
+    "description": "ZER0 creates customs URLs to share your profile with others, but with a hacker style.",
     "tag": "service",
     "shortLabel": "Mail Forwarding",
     "year": 2026,
     "featured": true
   },
   {
-    "name": "Haltman.IO Dev Docs",
-    "href": "https://dev.haltman.io",
-    "description": "Technical documentation, guides, and developer knowledge base.",
-    "tag": "docs",
-    "shortLabel": "Dev Docs",
+    "name": "rtc2tcp",
+    "href": "https://github.com/haltman-io/rtc2tcp",
+    "description": "Tunnel any TCP port over an end-to-end encrypted WebRTC DataChannel.",
+    "tag": "service",
+    "shortLabel": "Mail Forwarding",
     "year": 2026,
     "featured": true
   },
   {
-    "name": "Haltman.IO Blog",
-    "href": "https://blog.haltman.io",
-    "description": "News, releases, and field notes from the crew.",
-    "tag": "blog",
-    "shortLabel": "Blog",
+    "name": "mail.thc.org (Addon, Chrome)",
+    "href": "https://chromewebstore.google.com/detail/email-alias-manager-free/ihjojmdobbcanaafcgpmagmmoaoflpjl",
+    "description": "Google Chrome Extension for MAIL.THC.ORG open-source email forwarding server.",
+    "tag": "service",
+    "shortLabel": "Mail Forwarding",
     "year": 2026
   },
   {
-    "name": "Brave-Search",
+    "name": "mail.thc.org (Addon, Firefox)",
+    "href": "https://addons.mozilla.org/en-US/firefox/addon/email-alias-manager/",
+    "description": "Mozilla Firefox Extension for MAIL.THC.ORG open-source email forwarding server.",
+    "tag": "service",
+    "shortLabel": "Mail Forwarding",
+    "year": 2026
+  },
+  {
+    "name": "mail.thc.org",
+    "href": "https://mail.thc.org/",
+    "description": "Free email forwarding server. Trusted by THC, Team-Teso, Phrack, Eurocompton, Antisec and others.",
+    "tag": "service",
+    "shortLabel": "Mail Forwarding",
+    "year": 2026,
+    "featured": true
+  },
+  {
+    "name": "haltman.io",
+    "href": "https://haltman.io/",
+    "description": "This website (because... WHY NOT?), this shit is open-source too",
+    "tag": "service",
+    "shortLabel": "Mail Forwarding",
+    "year": 2026,
+    "featured": true
+  },
+  {
+    "name": "brave-search (CLI)",
     "href": "https://github.com/haltman-io/brave-search",
     "description": "CLI tool for Brave Search API. Search the web from your terminal.",
     "tag": "cli",
@@ -35,7 +61,7 @@
     "featured": true
   },
   {
-    "name": "IP-THC",
+    "name": "ip-thc (CLI)",
     "href": "https://github.com/haltman-io/ip-thc",
     "description": "Query over 4.7 billion mapped assets from the terminal.",
     "tag": "cli",
@@ -44,7 +70,7 @@
     "featured": true
   },
   {
-    "name": "Sub-Alter",
+    "name": "sub-alter (CLI)",
     "href": "https://github.com/haltman-io/sub-alter",
     "description": "Domain and subdomain discovery for reconnaissance.",
     "tag": "cli",
@@ -53,19 +79,21 @@
     "featured": true
   },
   {
-    "name": "Reverse-Whois",
+    "name": "reverse-whois (CLI)",
     "href": "https://github.com/haltman-io/reverse-whois",
     "description": "Reverse WHOIS lookup. Find all domains registered by an entity.",
     "tag": "cli",
     "shortLabel": "Reverse-Whois",
-    "year": 2025
+    "year": 2025,
+    "featured": true
   },
   {
-    "name": "Search-Leaks",
+    "name": "search-leaks (CLI)",
     "href": "https://github.com/haltman-io/search-leaks",
     "description": "Query data breach and leak statistics from the command line.",
     "tag": "cli",
     "shortLabel": "Search-Leaks",
-    "year": 2025
+    "year": 2025,
+    "featured": true
   }
 ]

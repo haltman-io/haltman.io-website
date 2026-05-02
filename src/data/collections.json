@@ -1,5 +1,15 @@
 [
   {
+    "name": "0.METASPLOIT.IO",
+    "href": "https://0.metasploit.io/",
+    "description": "ZER0 creates customs URLs to share your profile with others, but with a hacker style.",
+    "category": "tool",
+    "tags": ["privacy", "free"],
+    "source": "THC",
+    "crewApproved": true,
+    "featured": true
+  },
+  {
     "name": "MAIL.THC.ORG",
     "href": "https://mail.thc.org/",
     "description": "Set up email forwards from 51 domains to any address. No tracking. No surveillance. Free.",
@@ -10,9 +20,17 @@
     "featured": true
   },
   {
-    "name": "MAIL.THC.ORG Extension",
+    "name": "MAIL.THC.ORG - Chrome Addon",
+    "href": "https://chromewebstore.google.com/detail/email-alias-manager-free/ihjojmdobbcanaafcgpmagmmoaoflpjl",
+    "description": "GOOGLE CHROME extension to manage email aliases on the fly, powered by MAIL.THC.ORG.",
+    "category": "tool",
+    "tags": ["privacy", "email", "browser"],
+    "source": "THC"
+  },
+  {
+    "name": "MAIL.THC.ORG - Firefox Addon",
     "href": "https://addons.mozilla.org/en-US/firefox/addon/email-alias-manager-free/",
-    "description": "Firefox extension to manage email aliases on the fly, powered by MAIL.THC.ORG.",
+    "description": "MOZILLA FIREFOX extension to manage email aliases on the fly, powered by MAIL.THC.ORG.",
     "category": "tool",
     "tags": ["privacy", "email", "browser"],
     "source": "THC"
