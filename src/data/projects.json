@@ -4,7 +4,7 @@
     "href": "https://0.metasploit.io/",
     "description": "ZER0 creates customs URLs to share your profile with others, but with a hacker style.",
     "tag": "service",
-    "shortLabel": "Mail Forwarding",
+    "shortLabel": "0.METASPLOIT.IO",
     "year": 2026,
     "featured": true
   },
@@ -13,7 +13,7 @@
     "href": "https://github.com/haltman-io/rtc2tcp",
     "description": "Tunnel any TCP port over an end-to-end encrypted WebRTC DataChannel.",
     "tag": "service",
-    "shortLabel": "Mail Forwarding",
+    "shortLabel": "RTC2CTCP",
     "year": 2026,
     "featured": true
   },
@@ -22,7 +22,7 @@
     "href": "https://chromewebstore.google.com/detail/email-alias-manager-free/ihjojmdobbcanaafcgpmagmmoaoflpjl",
     "description": "Google Chrome Extension for MAIL.THC.ORG open-source email forwarding server.",
     "tag": "service",
-    "shortLabel": "Mail Forwarding",
+    "shortLabel": "GOOGLE CHROME EXTENSION",
     "year": 2026
   },
   {
@@ -30,7 +30,7 @@
     "href": "https://addons.mozilla.org/en-US/firefox/addon/email-alias-manager/",
     "description": "Mozilla Firefox Extension for MAIL.THC.ORG open-source email forwarding server.",
     "tag": "service",
-    "shortLabel": "Mail Forwarding",
+    "shortLabel": "MOZILLA FIREFOX EXTENSION",
     "year": 2026
   },
   {
@@ -43,11 +43,11 @@
     "featured": true
   },
   {
-    "name": "haltman.io",
+    "name": "haltman.io website",
     "href": "https://haltman.io/",
-    "description": "This website (because... WHY NOT?), this shit is open-source too",
+    "description": "This website is open-source too!",
     "tag": "service",
-    "shortLabel": "Mail Forwarding",
+    "shortLabel": "Website",
     "year": 2026,
     "featured": true
   },
