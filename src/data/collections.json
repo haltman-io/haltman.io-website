@@ -1,5 +1,15 @@
 [
   {
+    "name": "vibee.sh",
+    "href": "https://vibee.sh/",
+    "description": "Zero-friction Linux servers. Provisioned in seconds. Managed entirely from your terminal.",
+    "category": "tool",
+    "tags": ["infrastructure", "free"],
+    "source": "THC",
+    "crewApproved": true,
+    "featured": true
+  },
+  {
     "name": "0.METASPLOIT.IO",
     "href": "https://0.metasploit.io/",
     "description": "ZER0 creates customs URLs to share your profile with others, but with a hacker style.",
