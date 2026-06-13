@@ -1,5 +1,14 @@
 [
   {
+    "name": "agmh",
+    "href": "https://github.com/haltman-io/agmh",
+    "description": "Python CLI for local repository backups and cross-forge Git mirroring.",
+    "tag": "cli",
+    "shortLabel": "AGMH",
+    "year": 2026,
+    "featured": true
+  },
+  {
     "name": "0.metasploit.io",
     "href": "https://0.metasploit.io/",
     "description": "ZER0 creates customs URLs to share your profile with others, but with a hacker style.",

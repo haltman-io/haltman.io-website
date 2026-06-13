@@ -1,11 +1,6 @@
 {
   "resourceLinks": [
     {
-      "href": "https://blog.haltman.io",
-      "label": "blog.haltman.io",
-      "description": "Our official blog for sharing the news."
-    },
-    {
       "href": "https://dev.haltman.io",
       "label": "dev.haltman.io",
       "description": "Our current knowledge base for documentation and guides."
