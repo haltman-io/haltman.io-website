@@ -1,0 +1,1128 @@
+---
+slug: survival-against-github-microsoft-anatel-without-a-cent
+title: Survival Against GitHub, Microsoft and ANATEL Repression Without Spending a Cent
+subtitle: "3 rabbits, 1 shot. Hacking stills live. Read it before they try burning your work."
+date: "2026-06-15"
+dateFormatted: June 15, 2026
+category: Infrastructure
+categorySlug: infrastructure
+author: extencil
+tags:
+  - label: Security
+    slug: security
+---
+
+This is not a hero story. Hero mode is expensive, noisy, and usually ends with someone else writing your postmortem while your disks sit in an evidence bag.
+
+This is about continuity.
+
+GitHub can suspend an account. Microsoft owns the house. ANATEL can make a path inside Brazil go dark and hide the wire damage behind bureaucracy. A classifier can put the bozo bit on your old vuln work. A legal department can send polite language while the extraction machinery warms up in the back room.
+
+You are not a platform. You are not a regulator. You are not a billion-dollar vendor with lawyers stacked in cold storage.
+
+You are a human with code, notes, repos, tarballs, logs, maybe a few angry friends, and a finite amount of time before the next piece of infra starts lying through its teeth.
+
+So stop negotiating with custody.
+
+Pull your work out. Mirror it. Publish a route map. Keep a copy where no dashboard can revoke your own hands. Spend zero if zero is the budget. The network was built to route around damage. Developers somehow forgot that and rented their memory to landlords with mascots and a quarterly roadmap.
+
+## table of contents
+
+* [0x00 - context](#0x00---context): prior drops, the account zap, GitHub as Microsoft property, the "let me take my stuff" rule, exit over tantrum.
+* [0x01 - threat model](#0x01---threat-model): account bans, support queues, legal heat, country-level blocks, poisoned dev endpoints, assets, adversaries, availability versus invisibility.
+* [0x02 - what broke](#0x02---what-broke): the assumptions, the forge wrapper, the access path, the account switch, Git as old iron.
+* [0x03 - why centralization is a trap](#0x03---why-centralization-is-a-trap): one login, one URL, one forge, one CI, one identity, one domain, one big red SPOF.
+* [0x04 - do not fistfight the wrong machine](#0x04---do-not-fistfight-the-wrong-machine): public authority, corporate lawyers, surface-area reduction, disinvestment, mirrors over revenge.
+* [0x05 - free infrastructure stack](#0x05---free-infrastructure-stack): bare mirrors, bundles, static exports, Codeberg, GitLab, SourceHut caveats, Forgejo, mail aliases, Tor/Snowflake, Segfault, GSocket, route maps.
+* [0x06 - Git mirrors, bare repos, and AGMH](#0x06---git-mirrors-bare-repos-and-agmh): [normal clone versus bare mirror](#normal-clone-versus-bare-mirror), [cold bundle and restore test](#cold-bundle-and-restore-test), [AGMH install and first run](#agmh-install-and-first-run), [fan-out to multiple forges](#fan-out-to-multiple-forges), [SourceHut over SSH](#sourcehut-over-ssh), [token hygiene](#token-hygiene).
+* [0x07 - forge fallbacks](#0x07---forge-fallbacks): [Codeberg](#codeberg), [Forgejo](#forgejo), [GitLab](#gitlab), [SourceHut](#sourcehut), [no holy destination](#no-holy-destination).
+* [0x08 - DNS, mail, identity, and backups](#0x08---dns-mail-identity-and-backups): [public route maps](#public-route-maps), [mail.thc.org quick terminal](#mailthcorg-quick-terminal), [why this alias stack does not stink](#why-this-alias-stack-does-not-stink), [backup layers](#backup-layers).
+* [0x09 - Brazilian network censorship and Segfault egress](#0x09---brazilian-network-censorship-and-segfault-egress): [the Brazilian control surface](#the-brazilian-control-surface), [route diversity](#route-diversity), [Segfault.net emergency egress](#segfaultnet-emergency-egress).
+* [0x0a - doomsday prep for surveillance states](#0x0a---doomsday-prep-for-surveillance-states): [compartments before costumes](#compartments-before-costumes), [Skyper's rule](#skypers-rule), [low-cost OPSEC pieces](#low-cost-opsec-pieces).
+* [0x0b - practical checklist](#0x0b---practical-checklist): [before trouble](#before-trouble), [during trouble](#during-trouble), [after trouble](#after-trouble), [one command, one file, one rule](#one-command-one-file-one-rule).
+* [0x0c - final notes](#0x0c---final-notes): [cloneability is the test](#cloneability-is-the-test), [THC public channels](#thc-public-channels), [final packet](#final-packet).
+* [0x0d - acknowledgements](#0x0d---acknowledgements): [roll call](#roll-call), [debt ledger](#debt-ledger), [doors](#doors).
+* [0x0e - sources / references](#0x0e---sources--references): [background context](#background-context), [AGMH and mirror tooling](#agmh-and-mirror-tooling), [THC infrastructure and culture](#thc-infrastructure-and-culture), [forge and static publishing references](#forge-and-static-publishing-references), [censorship, governance, and safety references](#censorship-governance-and-safety-references).
+
+## 0x00 - context
+
+The trigger was documented in the previous AGMH posts:
+
+* https://forum.0x00sec.org/n/surviving-github-microsoft-and-anatel-repression-without-a-cent-1-2/533
+* https://forum.0x00sec.org/n/surviving-github-microsoft-and-anatel-repression-without-a-cent-2-2/534
+
+The short version:
+
+* GitHub, now part of Microsoft's house, suspended accounts during a wider trust-and-safety dragnet around exploit publication and suspicious activity.
+* A personal account tied to legitimate vulnerability disclosure history got caught in the gears.
+* During the scramble to pull repos out before the dashboard turned into a brick, access to the GitHub API path from Brazil became unreliable in a way that matched the local blocking mess around ANATEL.
+* AGMH was built and then expanded from "GitHub backup script" into a cross-forge mirror tool because one corporate forge is not a home. It is a parking lot with policy bots and bad coffee.
+
+The longer version is in the two prior drops. Read them first if you want the packet dump and blood trail. This one is the field manual.
+
+GitHub is useful. So is a rented storage unit. So is a random shell box at 3 AM when the local route is cooked. None of these things are your identity.
+
+And yes, GitHub today lives inside Microsoft. I do not accept the childish argument of "I know you do not like me, but accept me in your house and stay quiet." That is nonsense. If the owner does not want me inside the house, fine. But let me take my belongings out. In this case: my repositories, my code, my issue context, my release files. And let me leave the address of my new house so the people who need the work can find it.
+
+That is not entitlement. That is exit(0).
+
+> Plain version: do not beg a platform to love you. Make sure leaving it does not kill your work.
+
+## 0x01 - threat model
+
+The threat model is not "the cyber enemy with a hoodie." That is television garbage for people who think `nmap` is a personality.
+
+The real threat model is boring and much worse:
+
+* account suspension by automated enforcement and classifier astrology;
+* support queues that answer after the corpse is cold;
+* legal takedown pressure before facts are examined;
+* source-code hosting policy changes;
+* country-level DNS or IP blocking;
+* opaque regulator orders;
+* poisoned developer endpoints;
+* credential theft from an employee workstation;
+* forge outages and dashboard faceplants;
+* CI vendors eating your build path because the YAML gods wanted tribute;
+* payment systems deciding your name, country, or project is dirty;
+* your own laziness, which is still the most reliable censor on the planet.
+
+This is not paranoia. This is incident review with fewer diagrams and less vendor perfume.
+
+The assets:
+
+* Git history;
+* release archives;
+* documentation;
+* static websites;
+* contact addresses;
+* public keys;
+* advisory text;
+* build instructions;
+* dependency pins;
+* domain names and redirect maps;
+* proof that a thing existed before someone tried to memory-hole it and call the hole "policy."
+
+The adversaries:
+
+* platforms protecting themselves first;
+* state machinery protecting its own control plane;
+* private enforcement bodies pretending shared infrastructure is a single target;
+* legal departments using delay as a weapon;
+* algorithms with no context, no shame, and too much authority;
+* you, if you still have one copy of important work.
+
+The goal is not invisibility. Not for this article. The goal is availability under pressure.
+
+There is a difference.
+
+Invisibility is OPSEC. Availability is logistics. Mix them carelessly and you get public drama, a seized account, and a directory full of half-written notes named `final_final2_REAL.md`. Every crew has seen that filename. Nobody respects it.
+
+> Plain version: decide what must stay public, what must stay private, and what must survive if one service or one country path breaks.
+
+## 0x02 - what broke
+
+The break was not only "GitHub suspended an account." That was just the loud clunk.
+
+The break was the stack of assumptions behind it:
+
+* that GitHub access equals access to your own work, which is adorable in the same way `chmod 777` is adorable;
+* that a platform warning will arrive before enforcement;
+* that support will understand security research context;
+* that a national network path will route cleanly because the site itself is up;
+* that one public URL is enough for people to find your code;
+* that a Git remote is a backup;
+* that a backup in the same account is a backup;
+* that an org mirror under the same vendor is outside the blast radius.
+
+None of that survived contact with the machine. The box told the truth. It usually does.
+
+Git itself did not fail. Git was sitting there like old iron, doing what it always did. The forge wrapper failed. The account system failed. The access path failed. The social assumption failed. The shiny web UI coughed, and the plumbing underneath kept being plumbing.
+
+That distinction matters.
+
+Git is content-addressed history and refs. GitHub is a business wrapped around it. GitLab is another wrapper. Codeberg is another wrapper. SourceHut is another wrapper. Forgejo is software you can run if you have somewhere to run it. The wrapper may be useful. The wrapper may be friendly. The wrapper may even be run by decent people who know which end of `strace` to hold.
+
+It is still a wrapper.
+
+Your survival plan starts when you stop confusing the wrapper with the repository.
+
+## 0x03 - why centralization is a trap
+
+Centralization is comfortable because it removes decisions.
+
+One login. One URL. One place for issues. One place for releases. One CI runner. One profile. One green badge. One social counter so people can pretend stars are engineering. One big red SPOF wearing a hoodie from a conference booth.
+
+It works until it does not.
+
+Then the same convenience becomes a choke point:
+
+* one login means one switch kills everything;
+* one URL means one block breaks discovery;
+* one forge means one policy team controls distribution;
+* one CI means one vendor controls the build path;
+* one identity means one mistake correlates every project you touched;
+* one domain means one registry or registrar failure sends users into smoke.
+
+Centralization sells you a clean desk and invoices you later in blast radius. Nice UI. Ugly failure mode. Classic.
+
+The old Internet was messier and healthier. BBS nodes. Mailing lists. FTP mirrors. `rsync`. Tarballs. PGP-signed releases. README files that said where the new place lived. People copied things because copying was the point. A file that mattered did not sit in one decorated database waiting for a trust-and-safety intern or policy daemon to misread it.
+
+Git kept that instinct alive. Then web forges trained people to forget it.
+
+The fix is not romantic. It is mechanical:
+
+* every important repo gets at least one local bare mirror;
+* every important repo gets at least two remote mirrors on different providers;
+* every important release gets a signed archive;
+* every important website can be rendered as static files;
+* every important contact address has a backup path;
+* every important identity publishes a "where to find me next" file.
+
+No mysticism. Just replication.
+
+> Plain version: if one company, one account, one DNS name, or one country can make your work disappear, your work is not distributed. It is parked.
+
+## 0x04 - do not fistfight the wrong machine
+
+Do not publicly fistfight ANATEL as if the court will treat your terminal window like scripture. In Brazil, ANATEL carries public authority. That changes the room. A regulator with public authority can produce paperwork that gets priority long before your thread, your repo, or your angry post gets dignity.
+
+Do not pretend GitHub and Microsoft are just another user in a forum argument. They have money, lawyers, policy teams, public-relations machinery, and the patience of institutions that can lose more cash in one meeting than you will see in a year.
+
+This does not mean kneel.
+
+It means stop being stupid about surface area.
+
+If a giant does not want your work in its house, leave the house. Take your repos. Take your releases. Take your docs. Put a redirect or a final pointer if the platform allows it. If it does not, publish the pointer elsewhere. The goal is not revenge. The goal is continuity.
+
+Revenge is a bad deployment target.
+
+Disinvestment works better:
+
+* reduce dependency;
+* reduce account value;
+* reduce legal exposure;
+* reduce public emotional noise;
+* increase mirrors;
+* increase boring backups;
+* increase independent routes.
+
+You do not need to defeat Microsoft in court to stop depending on Microsoft-owned infrastructure for public survival. You need a mirror and a habit.
+
+## 0x05 - free infrastructure stack
+
+Zero budget does not mean zero infrastructure. It means no paid dependency is allowed to become critical. Free beer is not free architecture; it is just beer someone else is paying for.
+
+A practical free stack looks like this:
+
+* local bare Git mirrors;
+* local working-tree snapshots for quick inspection;
+* `git bundle` archives for cold storage;
+* static HTML or plain Markdown exports;
+* Codeberg repositories and Codeberg Pages;
+* GitLab repositories and GitLab Pages;
+* SourceHut where available, with the payment caveat understood;
+* public Forgejo instances when they fit the project rules;
+* self-hosted Forgejo only if you already have iron or a friendly box;
+* `mail.thc.org` or similar aliasing for contact separation;
+* Tor Browser and Snowflake for censored paths;
+* Segfault.net for disposable root boxes and temporary network work;
+* GSocket for legitimate access to your own boxes across NAT and hostile routing;
+* plain text route maps copied everywhere.
+
+Do not worship any item on that list. Tools are replaceable. The pattern is the asset. If a tool becomes religion, burn the altar and keep the man page.
+
+Codeberg Pages can publish static sites from a public repository under `codeberg.page`. GitLab Pages can publish static sites from GitLab repositories under `gitlab.io` at no additional cost on the free tier. SourceHut is cleaner in spirit than many platforms, but hosting projects there is expected to be paid according to means; during alpha, some hosting services remain optional-payment, and financial aid exists. Read the pricing page instead of inventing a fantasy.
+
+Free means "works today without a credit card." It does not mean "guaranteed forever." Product terms rot. Policy changes. Free tiers become traps. The cure is still the same: never one copy, never one vendor, never one path. No single pane of glass. Those panes break.
+
+> Plain version: use free services, but treat them as mirrors, not as gods.
+
+## 0x06 - Git mirrors, bare repos, and AGMH
+
+The first survival primitive is a bare mirror.
+
+### normal clone versus bare mirror
+
+Normal clone:
+
+```bash
+git clone https://github.com/USER/PROJECT.git
+```
+
+Bare mirror:
+
+```bash
+git clone --mirror https://github.com/USER/PROJECT.git PROJECT.git
+```
+
+The mirror includes refs. It is shaped for pushing elsewhere:
+
+```bash
+cd PROJECT.git
+git remote set-url --push origin git@gitlab.com:USER/PROJECT.git
+git push --mirror
+```
+
+Add another destination:
+
+```bash
+git remote set-url --add --push origin git@codeberg.org:USER/PROJECT.git
+git push --mirror
+```
+
+### cold bundle and restore test
+
+Make a cold bundle:
+
+```bash
+git bundle create ../PROJECT-$(date -u +%Y%m%d).bundle --all
+sha256sum ../PROJECT-*.bundle > ../SHA256SUMS
+```
+
+Verify the bundle:
+
+```bash
+git bundle verify ../PROJECT-20260615.bundle
+git clone ../PROJECT-20260615.bundle PROJECT-restore-test
+```
+
+That restore test is not decorative. A backup you never restored is a rumor.
+
+### AGMH install and first run
+
+For many repos, stop doing it by hand and use AGMH:
+
+https://github.com/haltman-io/agmh
+
+Install:
+
+```bash
+python3 -m pip install -U pip
+python3 -m pip install "agmh[tui]"
+```
+
+Create a config and a source list:
+
+```bash
+agmh init-config --path agmh.config.toml
+
+cat > sources.txt <<'EOF'
+https://github.com/YOUR_USER_OR_ORG/
+EOF
+```
+
+Dry-run before touching the wire for real:
+
+```bash
+agmh run --config agmh.config.toml --dry-run --verbose
+```
+
+Local mirrors first:
+
+```bash
+export GITHUB_TOKEN="source_token_here"
+
+agmh local-mirror \
+  --source https://github.com/YOUR_USER_OR_ORG/ \
+  --github-token env:GITHUB_TOKEN \
+  --local-dir backups \
+  --verbose
+```
+
+Download readable working trees when you want files on disk, not bare repos:
+
+```bash
+agmh download \
+  --source https://github.com/YOUR_USER_OR_ORG/ \
+  --github-token env:GITHUB_TOKEN \
+  --local-dir backups \
+  --verbose
+```
+
+Then push to another forge:
+
+```bash
+export GITLAB_TOKEN="destination_token_here"
+
+agmh remote-mirror \
+  --config agmh.config.toml \
+  --destination https://gitlab.com/YOUR_NAMESPACE \
+  --destination-token gitlab:env:GITLAB_TOKEN \
+  --verbose
+```
+
+Or do a full run:
+
+```bash
+agmh run \
+  --source https://github.com/YOUR_USER_OR_ORG/ \
+  --github-token env:GITHUB_TOKEN \
+  --destination https://codeberg.org/YOUR_NAMESPACE \
+  --destination-token forgejo:YOUR_USERNAME:env:CODEBERG_TOKEN \
+  --verbose
+```
+
+### fan-out to multiple forges
+
+Mirror a GitHub profile to GitLab and Codeberg by running separate destination passes. Boring, explicit, debuggable:
+
+```bash
+export GITHUB_TOKEN="source_token_here"
+export GITLAB_TOKEN="gitlab_destination_token_here"
+export CODEBERG_TOKEN="codeberg_destination_token_here"
+
+agmh run \
+  --source https://github.com/YOUR_USER_OR_ORG/ \
+  --github-token env:GITHUB_TOKEN \
+  --destination https://gitlab.com/YOUR_GITLAB_NAMESPACE \
+  --destination-token gitlab:env:GITLAB_TOKEN \
+  --verbose
+
+agmh run \
+  --source https://github.com/YOUR_USER_OR_ORG/ \
+  --github-token env:GITHUB_TOKEN \
+  --destination https://codeberg.org/YOUR_CODEBERG_NAMESPACE \
+  --destination-token forgejo:YOUR_CODEBERG_USERNAME:env:CODEBERG_TOKEN \
+  --verbose
+```
+
+### SourceHut over SSH
+
+For SourceHut, use config. SSH push is the sane path:
+
+```toml
+[[sources]]
+url = "https://github.com/YOUR_USER_OR_ORG"
+platform = "github"
+tokens = [{ env = "GITHUB_TOKEN", name = "github-source" }]
+
+[[destinations]]
+url = "https://git.sr.ht/~YOUR_SOURCEHUT_USER"
+platform = "sourcehut"
+tokens = [{ env = "SOURCEHUT_TOKEN", name = "sourcehut-destination" }]
+visibility = "mirror"
+push_mode = "mirror"
+push_url_template = "git@git.sr.ht:~{owner}/{repo}"
+
+[git]
+ssh_identity_file = "/home/user/.ssh/sourcehut_ed25519"
+ssh_identities_only = true
+ssh_batch_mode = true
+ssh_strict_host_key_checking = "accept-new"
+```
+
+Then:
+
+```bash
+export GITHUB_TOKEN="source_token_here"
+export SOURCEHUT_TOKEN="sourcehut_destination_token_here"
+
+agmh run \
+  --config agmh.config.toml \
+  --verbose
+```
+
+### token hygiene
+
+Tokens go in environment variables. Not in config. Not in screenshots. Not in notes. Not in a private repo named `secrets` because apparently irony needed a grave.
+
+> Plain version: `git clone --mirror` makes a transportable copy of the repository. `git push --mirror` pushes that copy elsewhere. AGMH automates this across many repositories and forges.
+
+## 0x07 - forge fallbacks
+
+Do not move from GitHub monoculture into another monoculture with different stickers. That is not migration. That is repainting the cage.
+
+Use forges as failure domains.
+
+### Codeberg
+
+Codeberg runs Forgejo and is good for public free software. It is not a magic dump for every private commercial repo you forgot to classify. Its Pages service is useful for static project pages and simple publication.
+
+Good use:
+
+* public mirrors;
+* small static project pages;
+* documentation;
+* alternate issue tracker for public work;
+* lightweight forge escape from GitHub.
+
+Bad use:
+
+* secrets;
+* client private code without reading rules;
+* anything that expects a corporate SLA from volunteer-aligned infrastructure.
+
+### Forgejo
+
+Forgejo is the software layer. If you can run it somewhere, it gives you control. If you cannot run it anywhere, do not pretend "self-hosting" is free. Someone pays for power, disk, uplink, backups, and time. Maybe it is you. Maybe it is a friend. Maybe it is an old box under a desk. Count that honestly.
+
+Good use:
+
+* a small crew forge;
+* LAN-first or VPN-first mirrors;
+* backup issue tracking;
+* private collaboration under your own rules.
+
+Bad use:
+
+* a single undermaintained VPS with no backups, sold to yourself as sovereignty.
+
+### GitLab
+
+GitLab.com is still a large platform, but it is a different failure domain from GitHub/Microsoft. GitLab Pages is useful for static sites. The CI path can build static output, but do not couple survival to CI. Keep a local build path.
+
+Good use:
+
+* public and private mirrors;
+* Pages fallback;
+* releases;
+* CI when useful.
+
+Bad use:
+
+* replacing GitHub worship with GitLab worship.
+
+### SourceHut
+
+SourceHut has the right allergy profile: no tracking, no advertising, no AI garbage, works well without JavaScript, mailing-list culture, Git and Mercurial support. But project hosting has a payment expectation according to means, with financial aid and alpha-era exceptions. That means it can be part of a zero-cent plan for some users, but should not be described lazily as a universal free host.
+
+Good use:
+
+* mailing-list driven projects;
+* simple Git hosting;
+* no-JavaScript workflow;
+* static pages if available to your account.
+
+Bad use:
+
+* assuming billing policy will never change;
+* assuming a hosted forge is a backup just because the culture is better.
+
+### no holy destination
+
+The rule:
+
+```text
+GitHub -> GitLab + Codeberg + local mirror
+GitLab -> Codeberg + local mirror
+Codeberg -> GitLab + local mirror
+Any forge -> git bundle + static release archive
+```
+
+No destination is holy. Every destination is just another copy.
+
+## 0x08 - DNS, mail, identity, and backups
+
+DNS is a phone book. A fragile one. A yellow pages duct-taped to BGP and lawyers.
+
+If you own a domain, keep it. Use it. Publish:
+
+* `/.well-known/security.txt`;
+* `/mirrors.txt`;
+* `/contact.txt`;
+* `/pgp.txt`;
+* `/SHA256SUMS`;
+* static release indexes.
+
+But if the plan requires buying a domain, it is not a zero-cent plan. Nice domain, shame about the registrar kill switch.
+
+### public route maps
+
+For zero budget, publish a route map on every mirror:
+
+```text
+PROJECT ROUTE MAP
+
+Primary:
+https://codeberg.org/USER/PROJECT
+
+Mirrors:
+https://gitlab.com/USER/PROJECT
+https://github.com/USER/PROJECT
+https://git.sr.ht/~USER/PROJECT
+
+Static docs:
+https://USER.codeberg.page/PROJECT/
+https://USER.gitlab.io/PROJECT/
+
+Contact:
+extencil <extencil@segfault.net>
+
+PGP:
+https://example.invalid/pgp.txt
+
+Last updated:
+2026-06-15
+```
+
+Put that file in every repo as `MIRRORS.md` or `WHERE.md`. Boring name. Easy grep. The future maintainer may be you, tired, angry, and running on gas-station coffee.
+
+### mail.thc.org quick terminal
+
+Mail is identity glue. Treat it like glue, not like a diary. A forwarding alias gives you separation between public projects and your real inbox. `mail.thc.org` exposes a free alias flow: pick a handle and domain, point it to a real inbox, confirm the token, and use the alias publicly. The repository behind Haltman/THC mail forwarding documents the stack and API.
+
+Forum write-up:
+
+https://forum.0x00sec.org/n/mail-thc-org-free-mail-forwarding-service-50-domains-open-source-auditable-no-logs-no-aliases-limits/318
+
+Quick terminal subscribe:
+
+```bash
+curl -G 'https://mail.thc.org/api/forward/subscribe' \
+  --data-urlencode 'name=extencil' \
+  --data-urlencode 'domain=ghetto.eurocompton.net' \
+  --data-urlencode 'to=extencil@segfault.net'
+```
+
+Quick terminal unsubscribe:
+
+```bash
+curl -G 'https://mail.thc.org/api/forward/unsubscribe' \
+  --data-urlencode 'alias=extencil@ghetto.eurocompton.net'
+```
+
+Confirm flow through the Haltman endpoint:
+
+```bash
+curl 'https://mail.haltman.io/api/forward/subscribe?name=myhandle&domain=segfault.net&to=you@proton.me'
+# check your inbox, grab the 6-digit token
+curl 'https://mail.haltman.io/api/forward/confirm?token=123456'
+```
+
+### why this alias stack does not stink
+
+Why trust it more than another polished mailbox product with a privacy slogan and a locked backend?
+
+First, the stack is open-source and auditable. The backend is not hidden behind the old "we protect our infrastructure by hiding the implementation" routine. That argument has always smelled like a known-bug closet with better stationery. Real trust starts where inspection starts. If the implementation is public, people can read it, test it, fork it, and find the ugly parts before they rot into folklore.
+
+Second, the domain pool is not a tiny toy. On 2026-06-15, `GET https://mail.thc.org/api/domains` returned 57 hostnames. Some of the better ones:
+
+```text
+segfault.net
+mail.haltman.io
+the.hackerschoice.org
+hackerschoice.org
+reads.phrack.org
+free.team-teso.net
+ghetto.eurocompton.net
+lulz.antisec.net
+smokes.thc.org
+stealth.rest
+homoglyph.org
+kerberoast.org
+johntheripper.org
+metasploit.io
+cobaltstrike.org
+polkit.org
+pwnbuffer.org
+abin.lat
+503.lat
+thc.extencil.me
+haltman.org
+fwd.haltman.io
+alt.haltman.io
+```
+
+Third, the service has public counters. On 2026-06-15, `GET https://mail.thc.org/api/stats` returned:
+
+```json
+{
+  "domains": 57,
+  "aliases": 6054,
+  "forwarded": 14174
+}
+```
+
+That is over 6,000 active forwardings and over 14,000 forwarded messages. Counters are not a security proof. They are smoke from a live machine. Better than a landing page promising trust with a stock photo of a padlock and three compliance logos nobody read.
+
+Fourth, there is currently no destination block list in the flow. You can point an alias at ordinary mailboxes, Guerrilla Mail, `mail.tm`, tempmail-style inboxes, or whatever disposable target still accepts the confirmation mail. That is useful when the job is compartmentalized contact, one-off registration, or isolating a public handle from a real inbox.
+
+Do not confuse this with secrecy. Forwarding is forwarding. The message still crosses SMTP. The destination still sees mail. The sender still emits metadata. Use aliases to reduce correlation and exposure, not to pretend email became a private transport because the domain name looks cooler. SMTP is old plumbing; it leaks like old plumbing.
+
+That does not make email private. Email is old, leaky, logged, forwarded, indexed, subpoenaed, synced, and usually abused by every product team within reach. Use it for contact and recovery, not for operational secrets.
+
+### backup layers
+
+Backups need layers:
+
+* hot: remote mirrors on multiple forges;
+* warm: local bare mirrors updated by cron;
+* cold: `git bundle` archives with checksums;
+* static: rendered docs and releases in tarballs;
+* social: route map copied into every public place.
+
+Example cron target:
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+base="$HOME/repo-mirrors"
+stamp="$(date -u +%Y%m%d)"
+
+mkdir -p "$base/bundles"
+
+find "$base/bare" -maxdepth 1 -type d -name '*.git' -print0 |
+while IFS= read -r -d '' repo; do
+  name="$(basename "$repo" .git)"
+  git -C "$repo" remote update --prune
+  git -C "$repo" bundle create "$base/bundles/$name-$stamp.bundle" --all
+done
+
+(
+  cd "$base/bundles"
+  sha256sum *-"$stamp".bundle > "SHA256SUMS-$stamp"
+)
+```
+
+Run it. Restore from it. Then trust it a little.
+
+> Plain version: DNS and email help people find you, but they are weak anchors. Put a mirror list inside the repo itself and keep offline bundles.
+
+## 0x09 - Brazilian network censorship and Segfault egress
+
+### the Brazilian control surface
+
+Brazil's risk is not that the Internet stops being technical. It is that the technical layer gets subordinated to opaque authority while users are handed a browser error and told nothing.
+
+Thiago Ayub's writing around Brazilian blocking is worth reading because it focuses on the real layer: providers, edge routers, DNS, secrecy, orders, and the operator stuck in the middle. NIC.br republished his warning about national fragmentation and the Lacre Virtual model. The ugly claim is simple: blocking can be pushed through a centralized mechanism under secrecy, while the user sees failure and the provider carries the operational burden.
+
+PL 4557/2024 makes the governance smell worse. The Chamber page describes it as a project to reorganize Internet governance in Brazil and strengthen supervision over domain registration and maintenance. CGI.br publicly objected to the proposal, warning against subordinating the CGI.br/NIC.br model to ANATEL and stressing the importance of separating telecom regulation from Internet protocol and governance layers.
+
+The practical conclusion is not "rage at ANATEL in public until the problem respects you." The router does not care about your thread.
+
+That is theater.
+
+The practical conclusion is:
+
+* assume local DNS can lie with a straight face;
+* assume IP paths can be blocked;
+* assume providers may be gagged;
+* assume the legal record may be hidden;
+* assume one country path is not enough;
+* publish alternate routes before the block;
+* keep content movable;
+* keep the argument documented in plain files, because screenshots rot and social feeds are memory holes with ads.
+
+The Brazilian state does not need to fully disconnect the Internet to make your project unreachable to ordinary users. It only needs enough pressure in the right layer, enough opacity, and enough confusion that everyone blames the wrong machine. "Works on my VPN" is not a national availability strategy.
+
+The defense is not one magic VPN. VPNs are companies too. Some are fine. Some are clown cars with affiliate links. Some will disappear when a court order lands. Some will sell you "military grade" encryption, which is how marketing departments tell you they found AES in a brochure and stopped reading.
+
+### route diversity
+
+Use multiple routes:
+
+* normal clearnet;
+* Tor Browser with bridges or Snowflake when censorship is the problem;
+* alternate DNS only when DNS poisoning is the problem;
+* HTTPS mirrors on different providers;
+* static pages on different domains;
+* local bundles when the wire is dead.
+
+### Segfault.net emergency egress
+
+The move I used during the ANATEL/GitHub API mess was Segfault.net.
+
+Not as magic. Not as a heroic trench. Just as a disposable root box with egress outside the local broken path, a public reverse TCP port, and enough room to run a temporary proxy while AGMH pulled the repos out. Ugly? Sure. Effective? Also yes. Welcome to ops.
+
+Segfault login is intentionally stupid-simple, the kind of thing that makes enterprise IAM departments break into hives:
+
+```bash
+ssh root@segfault.net
+# password: segfault
+```
+
+Inside the Segfault box, ask for a public reverse port:
+
+```bash
+curl sf/port
+```
+
+It prints something shaped like this:
+
+```text
+Your reverse Port is 83.143.242.45 31343 [83.143.242.45:31343]
+```
+
+Then run a temporary HTTP proxy on that port. I used `gost`. Duct tape with sockets:
+
+```bash
+gost -L http://:31343
+```
+
+On the workstation, test the GitHub API through that route:
+
+```bash
+curl -I \
+  --proxy http://83.143.242.45:31343 \
+  https://api.github.com/users/extencil
+```
+
+If that returns sane HTTP headers while the direct Brazilian path is coughing blood, route AGMH through the same proxy:
+
+```bash
+export GITHUB_TOKEN="source_token_here"
+export GITLAB_TOKEN="destination_token_here"
+
+agmh run \
+  --config agmh.config.toml \
+  --proxy http://83.143.242.45:31343 \
+  --verbose
+```
+
+Or with direct flags:
+
+```bash
+agmh run \
+  --source https://github.com/YOUR_USER_OR_ORG/ \
+  --github-token env:GITHUB_TOKEN \
+  --destination https://gitlab.com/YOUR_GITLAB_NAMESPACE \
+  --destination-token gitlab:env:GITLAB_TOKEN \
+  --proxy http://83.143.242.45:31343 \
+  --verbose
+```
+
+Replace `83.143.242.45:31343` with the IP and port Segfault gives you. Keep the Segfault shell open. Kill the shell or the proxy process and the route dies. Get a new port, update the command, continue. Very high ceremony. Much enterprise. Many diagrams.
+
+If TLS verification breaks because the path is being mangled and you understand the risk, AGMH has `--insecure`. That disables certificate verification for API calls and Git HTTPS operations. Use it like a dirty field splint, not like a lifestyle:
+
+```bash
+agmh run \
+  --config agmh.config.toml \
+  --proxy http://83.143.242.45:31343 \
+  --insecure \
+  --verbose
+```
+
+This was the whole trick: leave the censored local egress path, fetch my own repositories, push mirrors elsewhere, and stop waiting for a Brazilian route or a platform ticket to become kind. No exploit. No drama. A shell, a proxy, a mirror. Packet goes out, repo comes back, custody loses a little oxygen.
+
+> Plain version: I used Segfault.net as a temporary outside-Brazil egress point. AGMH talks to GitHub through the Segfault proxy, pulls the repos, and pushes mirrors to another forge before the original account or route becomes useless.
+
+Do not confuse route circumvention with legal immunity. A route is not a shield against law. It is just a path.
+
+> Plain version: censorship often looks like a technical outage. Prepare alternate paths before you need them, and do not assume a VPN is a magic legal force field.
+
+## 0x0a - doomsday prep for surveillance states
+
+This is only the light introduction. A fuller post on surviving safely outside public and political radar is being written, not published yet. That one deserves its own threat model and fewer throwaway paragraphs.
+
+### compartments before costumes
+
+For now, the minimum:
+
+* separate identity from work;
+* separate contact from recovery;
+* separate publishing from private life;
+* separate public mirrors from private repos;
+* separate devices or at least browser profiles when risk justifies it;
+* use full-disk encryption;
+* use a password manager;
+* use hardware-backed 2FA where possible;
+* keep recovery codes offline;
+* reduce logs you control;
+* reduce accounts you do not need;
+* do not put operational details in chats;
+* do not trust "private" groups with permanent memory;
+* do not brag, because clout is a bug bounty paid in future subpoenas.
+
+### Skyper's rule
+
+Skyper from THC/TESO/Phrack said it cleanly in the WWSUL interview:
+
+> "don't talk, don't brag, don't go to conferences, don't publish anything, certainly not under your name. Stay hidden. Stay under the radar."
+
+That line is not a costume. It is risk accounting.
+
+Ask the ugly question:
+
+Do you want fame and status, or do you want the work to keep reaching the people who need it?
+
+If you are genuinely good at OPSEC, is it worth burning your real name just to collect applause from people who will not visit you when the paperwork arrives? Is it worth making yourself easier to pressure, and indirectly hurting the people who need you alive, unknown, and still publishing techniques, articles, and practical tricks for free access to information when the environment gets chaotic?
+
+This is not an argument against publishing. I publish. THC publishes. Phrack publishes. The scene exists because people wrote things down and shipped them.
+
+It is an argument against confusing publication with self-exposure.
+
+Use pseudonyms without turning them into brands. Keep compartments. Let the work speak. If your handle becomes a golden statue, melt it and make a new key. Handles are tools, not monuments.
+
+### low-cost OPSEC pieces
+
+Practical low-cost pieces:
+
+* Tor Browser for censored or sensitive browsing;
+* Snowflake as a Tor transport when ordinary Tor access is blocked;
+* Signal or SimpleX for sensitive contact, with disappearing messages and sane group size;
+* mail aliases for public contact and account separation;
+* GPG or age for file encryption;
+* `git bundle` plus checksums for repo escape;
+* encrypted local storage for archives;
+* a printed or offline route map for critical contacts;
+* static HTML copies of public docs;
+* no real-name conference circuit when your threat model says pressure matters.
+
+Notice what is missing: fantasy.
+
+No "become untraceable in five commands." No magic phone. No influencer OPSEC. No sticker-covered laptop pretending to be a Faraday cage. If your OPSEC plan needs a ring light, it is already dead.
+
+The first OPSEC control is shutting up. The second is not putting all your work under one account owned by a company that owes you nothing.
+
+> Plain version: publish the work, not your throat. Keep identity compartments, reduce unnecessary records, and do not turn survival into performance.
+
+## 0x0b - practical checklist
+
+### before trouble
+
+Do this before trouble:
+
+* list every repo that matters;
+* classify each repo as public, private, embargoed, client, or dead;
+* create local bare mirrors for every repo that matters;
+* push public mirrors to at least two different forges;
+* export `git bundle` archives for cold storage;
+* write `MIRRORS.md` in every public repo;
+* publish static docs to Codeberg Pages and GitLab Pages where possible;
+* keep release tarballs and checksums outside the main forge;
+* create at least one public contact alias not tied to your real inbox;
+* publish a PGP key or age recipient if encrypted contact matters;
+* save recovery codes offline;
+* rotate tokens that touched untrusted machines;
+* test restore on a clean directory;
+* document the exact commands in a local `RUNBOOK.md`.
+
+### during trouble
+
+Do this during trouble:
+
+* stop posting emotional noise and live-blogging your panic;
+* freeze the facts in a timeline;
+* mirror before arguing;
+* pull private repos first if access may vanish;
+* export releases, wikis, and pages if the forge supports it;
+* save support-ticket text and timestamps;
+* publish a route update from a separate platform;
+* keep legal claims factual and boring;
+* do not threaten institutions with more lawyers than you have chairs;
+* do not do live OPSEC improvisation in public chat. IRC taught us many things. That was not one of them.
+
+### after trouble
+
+Do this after trouble:
+
+* write the postmortem;
+* remove dead dependencies;
+* revoke old tokens;
+* check which mirror was actually useful;
+* remove mirrors that silently failed;
+* update route maps;
+* automate the boring parts, because future-you is a tired luser with root;
+* teach one other person how to restore the work.
+
+### one command, one file, one rule
+
+If you need one command to start:
+
+```bash
+git clone --mirror https://github.com/USER/PROJECT.git PROJECT.git
+```
+
+If you need one file to start:
+
+```text
+MIRRORS.md
+```
+
+If you need one rule to start:
+
+```text
+No single point of custody.
+```
+
+## 0x0c - final notes
+
+### cloneability is the test
+
+The point is not to hate GitHub harder. Hatred is not an architecture.
+
+The point is to stop placing public work under one revocable account, one corporate policy stack, one DNS path, one regulator's mood, one payment rail, one country route, or one identity that cannot survive pressure.
+
+GitHub can be one mirror.
+
+Microsoft can keep its house.
+
+ANATEL can keep its paperwork.
+
+Your work should still be cloneable. If it cannot be cloned, mirrored, bundled, and found again, it is not public infrastructure. It is content hosted at someone else's pleasure.
+
+That is the test.
+
+If people need your code during a chaotic week, can they find it? If a platform locks you out, can you push elsewhere? If DNS lies, is there another route? If your real name becomes expensive, can the work continue under a random pseudonym? If the static site dies, does the tarball exist? If the tarball exists, did you sign it? If you signed it, can anyone find the key?
+
+Most people do not need exotic infrastructure. They need to stop being lazy with boring infrastructure. The boring stuff wins because it runs while the flashy stuff is still writing its launch post.
+
+### THC public channels
+
+THC has been living this culture longer than most vendor security teams have existed. Public work. Free services. Tools. Weird infrastructure. Useful contempt. Segfault.net gives disposable root boxes. GSocket connects across NAT and firewalls for legitimate access to your own systems. mail.thc.org gives free forwarding aliases. Their older privacy text for rebellions repeats the rule that matters most: shut up, compartmentalize, and do not feed the machine more metadata than necessary.
+
+If this frequency makes sense, join the public THC channels listed here:
+
+https://www.thc.org/ops/
+
+The Telegram group is:
+
+https://t.me/thcorg
+
+Bring work. Bring patches. Bring measurements. Bring packet captures if they are clean. Leave the personal brand at the door.
+
+### final packet
+
+For the LULZ.
+
+For the record.
+
+For the network.
+
+---
+
+## 0x0d - acknowledgements
+
+No tool drops from a clean vacuum. Somebody says the annoying thing. Somebody points at the missing edge case. Somebody shows up when the account is dead and the route is smoked. Somebody reposts, mirrors, complains, jokes, tests, breaks, or just keeps you from feeling alone while the platform machinery does its little bureaucratic dance.
+
+This is the debt ledger. Not corporate credits. No velvet rope. Just names on the wall.
+
+### roll call
+
+* **Skyper** / **THC**
+* **jiab77** / unknown
+* **Doctor Who** / **THC**
+* **Cass Bone** / **THC**
+* **clonazepunk** / **THC** and **Haltman.IO**
+* **ohmymex** / **THC** and **Haltman.IO**
+* **numex** / **THC** and **Haltman.IO**
+* **c0z** / **0x00sec**
+* **mrsskelli** / **Digital Overdose Discord community**
+* **Maya** / **Digital Overdose Discord community**
+* **bsdaemon** / **Phrack**
+* **messede** / **THC**
+* **killsystema** / **Haltman.IO**
+* **veronmaiden** / **Haltman.IO**
+* **Akira Tracer** / **Haltman.IO**
+* **Anubis Hex** / **Haltman.IO**
+* **Gabriel Akbar** / unknown
+* **The Hacker's Choice** / the punkiest crew since 1995
+* **Haltman.IO** / our Brazilian attempt at something free, resurrecting hacking without spending one cent or charging for the privilege
+* **IRCC - Incident Response Chaos Club on Discord**
+* **Phrack.org**
+* **0x00sec**
+* **vx-underground**
+* everyone else who helped somehow and got accidentally left out, because memory is a lossy filesystem and I am still human
+
+### debt ledger
+
+**jiab77** and **Doctor Who** deserve a special slot. Some say they are the same person. We will never confirm or deny this. What matters is simpler: both shared ideas and pain around Git mirroring, and that pain fed the first spark of **AGMH**. Good tools often start as irritation with a file descriptor.
+
+**mrsskelli** deserves more than a one-line credit. She was available to talk, active in the **Digital Overdose Discord community**, and gave me massive support when **GitHub** banned me. I love you. Do not get weird about it: **mrsskelli** is a great person, runs a wonderful community, and gave me support I will not forget. She even reactivated her **X** account just to like and repost the situation. That is priceless to me, because it made the ban feel less like solitary confinement with a ticket number.
+
+**Maya**, thanks for the comment when I shared **AGMH** in **Digital Overdose**. Sometimes one sentence from the right place is enough to keep the daemon running.
+
+**messede**, thanks because through you I found **0x00sec**, and also because this legendary hacker created `ip.thc.org`. Useful little cursed thing.
+
+**Skyper**, thanks for being a root mirror from the underground into the current hacking scene, and for receiving with open arms the vulnerability reports I sent for **Segfault.net** in 2023 and `iq.thc.org` in 2026 ;). Thanks also for giving me `extencil@proton.thc.org`. That address is not just mail. It is scene plumbing.
+
+**Cass Bone**, thanks for contributing ideas and helping improve **AGMH**.
+
+**c0z**, thanks for pushing me to write the post for `forum.0x00sec.org`. Maybe none of this would have grown legs if you had not said to write it for the forum. Annoying advice. Correct advice. Classic.
+
+**clonazepunk**, **ohmymex**, **numex**, **killsystema**, **veronmaiden**, **Akira Tracer**, and **Anubis Hex**: thanks for staying beside me and giving support when I lost my **GitHub** account. Crews are measured when the wire is bad, not when the chat is funny.
+
+**bsdaemon**, thanks for sharing your own repository-backup pain. Even if it was indirect, that complaint pushed me to kill that pain for you and for the other people who had the same rot sitting in their workflow.
+
+**Gabriel Akbar**, thanks for standing beside me since 2017, when I entered this area. You are no longer with us. Rest in peace.
+
+**The Hacker's Choice**, thanks for keeping a public group open where people can share research, including **AGMH**, and for making it possible to meet excellent people through that space.
+
+**Haltman.IO**, thanks for keeping everything open-source and charging nothing for it. No paywall. No fake scarcity. No "community edition" with the useful bits sawed off.
+
+**Phrack.org**, thanks for giving hacking research a home since the first drops, and for making it possible to meet sharp people through that long wire.
+
+**0x00sec**, especially the members, admins, lurkers, loudmouths, quiet operators, and anyone else who is part of that place: thanks for encouraging this article from the start. Forums still matter. Threads still matter. Long text still matters. The feed did not kill the archive.
+
+**vx-underground**, thanks for liking my **X** post and the public vent. The algorithmic sewer moved the content to more people because you touched it. Strange machine. Useful accident.
+
+**IRCC - Incident Response Chaos Club on Discord**, thanks for republishing my **X** post in the main announcements channel, and for spamming my post asking for my freedom on **GitHub**. Extremely subtle. Very disciplined. No notes.
+
+To everyone else who helped somehow and I forgot to name here by accident: there is always space for you in my heart. The omission is not malice. It is swap pressure.
+
+### doors
+
+**Digital Overdose** on **Discord**:
+
+https://discord.gg/QrMutghMQw
+
+**0x00sec**:
+
+https://0x00sec.org/
+
+**0x00sec Discord**:
+
+https://discord.gg/c6BHVfn
+
+**Haltman.IO**:
+
+https://haltman.io/join/
+
+**Haltman.IO Telegram**:
+
+https://t.me/haltman_group
+
+**IRCC**:
+
+https://irchaos.club/
+
+**IRCC Discord**:
+
+https://discord.gg/ircc
+
+
+---
+
+## 0x0e - sources / references
+
+### background context
+
+* https://forum.0x00sec.org/n/surviving-github-microsoft-and-anatel-repression-without-a-cent-1-2/533
+* https://forum.0x00sec.org/n/surviving-github-microsoft-and-anatel-repression-without-a-cent-2-2/534
+
+### AGMH and mirror tooling
+
+* https://github.com/haltman-io/agmh
+* https://github.com/haltman-io/agmh/wiki/AGMH-COMPLETE-GUIDE
+
+### THC infrastructure and culture
+
+* https://www.thc.org/
+* https://www.thc.org/segfault/
+* https://www.thc.org/ops/
+* https://t.me/thcorg
+* https://gsocket.io/
+* https://mail.thc.org/
+* https://forum.0x00sec.org/n/mail-thc-org-free-mail-forwarding-service-50-domains-open-source-auditable-no-logs-no-aliases-limits/318
+* https://github.com/haltman-io/mail-forwarding
+* https://hackerschoice.medium.com/it-security-and-privacy-for-the-rebellions-of-the-world-db4023cadcca
+* https://wherewarlocksstayuplate.com/interview/episode-4-eduart-steiner-aka-skyper/
+* https://www.youtube.com/watch?v=sQVLniT9CDY
+
+### forge and static publishing references
+
+* https://codeberg.page/
+* https://docs.gitlab.com/user/project/pages/
+* https://forgejo.org/compare/
+* https://sourcehut.org/pricing/
+
+### censorship, governance, and safety references
+
+* https://nic.br/noticia/na-midia/quao-distante-o-brasil-esta-do-nepal-novas-leis-e-sistemas-de-bloqueio-aproximam-nacoes-da-fragmentacao-da-internet/
+* https://www.camara.leg.br/proposicoesWeb/fichadetramitacao?idProposicao=2472445
+* https://www.cgi.br/esclarecimento/nota-publica-sobre-o-projeto-de-lei-n-4-557-2024-que-propoe-redefinicao-do-modelo-vigente-de-governanca-da-internet-no-brasil/
+* https://snowflake.torproject.org/
+* https://ssd.eff.org/
