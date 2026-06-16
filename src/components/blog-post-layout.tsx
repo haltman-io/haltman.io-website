@@ -49,13 +49,13 @@ export function BlogPostLayout({
       <main className="min-h-screen bg-[var(--background)] pb-12 pt-12 sm:pb-16">
         <div className="px-6 sm:px-8">
           <div className="mx-auto min-[1500px]:max-w-[86rem]">
-            <div className="min-[1500px]:grid min-[1500px]:grid-cols-[14rem_minmax(0,54rem)_14rem] min-[1500px]:items-start min-[1500px]:gap-8">
+            <div className="min-w-0 min-[1500px]:grid min-[1500px]:grid-cols-[14rem_minmax(0,54rem)_14rem] min-[1500px]:items-start min-[1500px]:gap-8">
               <aside className="hidden w-56 min-[1500px]:sticky min-[1500px]:top-28 min-[1500px]:block">
                 <TableOfContents />
               </aside>
 
-              <div className="mx-auto w-full max-w-[54rem] border border-[var(--red-border)] bg-[rgba(10,10,10,0.4)] px-6 py-12 shadow-[0_0_40px_rgba(0,0,0,0.5)] sm:px-8 lg:px-12 lg:py-16">
-                <article id="article-content">
+              <div className="mx-auto min-w-0 w-full max-w-[54rem] overflow-hidden border border-[var(--red-border)] bg-[rgba(10,10,10,0.4)] px-6 py-12 shadow-[0_0_40px_rgba(0,0,0,0.5)] sm:px-8 lg:px-12 lg:py-16">
+                <article id="article-content" className="min-w-0 max-w-full overflow-hidden">
                   <HeadingAnchors />
 
                   {/* Article Header */}
@@ -104,7 +104,7 @@ export function BlogPostLayout({
                   </header>
 
                   {/* Article Body — unique content per post */}
-                  <div className="w-full [&_li]:text-justify [&_p]:text-justify">
+                  <div className="min-w-0 w-full max-w-full [overflow-wrap:anywhere] [&_a]:[overflow-wrap:anywhere] [&_a]:[word-break:break-word] [&_li]:min-w-0 [&_li]:max-w-full [&_li]:[overflow-wrap:anywhere] [&_li]:text-justify [&_p]:max-w-full [&_p]:[overflow-wrap:anywhere] [&_p]:text-justify">
                     {children}
                   </div>
                 </article>

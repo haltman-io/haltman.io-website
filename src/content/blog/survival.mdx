@@ -33,11 +33,11 @@ Pull your work out. Mirror it. Publish a route map. Keep a copy where no dashboa
 * [0x02 - what broke](#0x02---what-broke): the assumptions, the forge wrapper, the access path, the account switch, Git as old iron.
 * [0x03 - why centralization is a trap](#0x03---why-centralization-is-a-trap): one login, one URL, one forge, one CI, one identity, one domain, one big red SPOF.
 * [0x04 - do not fistfight the wrong machine](#0x04---do-not-fistfight-the-wrong-machine): public authority, corporate lawyers, surface-area reduction, disinvestment, mirrors over revenge.
-* [0x05 - free infrastructure stack](#0x05---free-infrastructure-stack): bare mirrors, bundles, static exports, Codeberg, GitLab, SourceHut caveats, Forgejo, mail aliases, Tor/Snowflake, Segfault, GSocket, route maps.
+* [0x05 - free infrastructure stack](#0x05---free-infrastructure-stack): bare mirrors, bundles, static exports, Codeberg, GitLab, SourceHut caveats, Forgejo, mail aliases, Tor/Snowflake, GSocket, route maps.
 * [0x06 - Git mirrors, bare repos, and AGMH](#0x06---git-mirrors-bare-repos-and-agmh): [normal clone versus bare mirror](#normal-clone-versus-bare-mirror), [cold bundle and restore test](#cold-bundle-and-restore-test), [AGMH install and first run](#agmh-install-and-first-run), [fan-out to multiple forges](#fan-out-to-multiple-forges), [SourceHut over SSH](#sourcehut-over-ssh), [token hygiene](#token-hygiene).
 * [0x07 - forge fallbacks](#0x07---forge-fallbacks): [Codeberg](#codeberg), [Forgejo](#forgejo), [GitLab](#gitlab), [SourceHut](#sourcehut), [no holy destination](#no-holy-destination).
 * [0x08 - DNS, mail, identity, and backups](#0x08---dns-mail-identity-and-backups): [public route maps](#public-route-maps), [mail.thc.org quick terminal](#mailthcorg-quick-terminal), [why this alias stack does not stink](#why-this-alias-stack-does-not-stink), [backup layers](#backup-layers).
-* [0x09 - Brazilian network censorship and Segfault egress](#0x09---brazilian-network-censorship-and-segfault-egress): [the Brazilian control surface](#the-brazilian-control-surface), [route diversity](#route-diversity), [Segfault.net emergency egress](#segfaultnet-emergency-egress).
+* [0x09 - Brazilian network censorship and Tor egress](#0x09---brazilian-network-censorship-and-tor-egress): [the Brazilian control surface](#the-brazilian-control-surface), [route diversity](#route-diversity), [Tor emergency egress](#tor-emergency-egress).
 * [0x0a - doomsday prep for surveillance states](#0x0a---doomsday-prep-for-surveillance-states): [compartments before costumes](#compartments-before-costumes), [Skyper's rule](#skypers-rule), [low-cost OPSEC pieces](#low-cost-opsec-pieces).
 * [0x0b - practical checklist](#0x0b---practical-checklist): [before trouble](#before-trouble), [during trouble](#during-trouble), [after trouble](#after-trouble), [one command, one file, one rule](#one-command-one-file-one-rule).
 * [0x0c - final notes](#0x0c---final-notes): [cloneability is the test](#cloneability-is-the-test), [THC public channels](#thc-public-channels), [final packet](#final-packet).
@@ -225,8 +225,7 @@ A practical free stack looks like this:
 * public Forgejo instances when they fit the project rules;
 * self-hosted Forgejo only if you already have iron or a friendly box;
 * `mail.thc.org` or similar aliasing for contact separation;
-* Tor Browser and Snowflake for censored paths;
-* Segfault.net for disposable root boxes and temporary network work;
+* Tor Browser, Snowflake, and a local Tor SOCKS port for censored paths;
 * GSocket for legitimate access to your own boxes across NAT and hostile routing;
 * plain text route maps copied everywhere.
 
@@ -547,7 +546,7 @@ https://USER.codeberg.page/PROJECT/
 https://USER.gitlab.io/PROJECT/
 
 Contact:
-extencil <extencil@segfault.net>
+extencil <extencil@proton.thc.org>
 
 PGP:
 https://example.invalid/pgp.txt
@@ -572,7 +571,7 @@ Quick terminal subscribe:
 curl -G 'https://mail.thc.org/api/forward/subscribe' \
   --data-urlencode 'name=extencil' \
   --data-urlencode 'domain=ghetto.eurocompton.net' \
-  --data-urlencode 'to=extencil@segfault.net'
+  --data-urlencode 'to=extencil@proton.me'
 ```
 
 Quick terminal unsubscribe:
@@ -585,7 +584,7 @@ curl -G 'https://mail.thc.org/api/forward/unsubscribe' \
 Confirm flow through the Haltman endpoint:
 
 ```bash
-curl 'https://mail.haltman.io/api/forward/subscribe?name=myhandle&domain=segfault.net&to=you@proton.me'
+curl 'https://mail.haltman.io/api/forward/subscribe?name=myhandle&domain=ghetto.eurocompton.net&to=you@proton.me'
 # check your inbox, grab the 6-digit token
 curl 'https://mail.haltman.io/api/forward/confirm?token=123456'
 ```
@@ -599,7 +598,6 @@ First, the stack is open-source and auditable. The backend is not hidden behind 
 Second, the domain pool is not a tiny toy. On 2026-06-15, `GET https://mail.thc.org/api/domains` returned 57 hostnames. Some of the better ones:
 
 ```text
-segfault.net
 mail.haltman.io
 the.hackerschoice.org
 hackerschoice.org
@@ -680,7 +678,7 @@ Run it. Restore from it. Then trust it a little.
 
 > Plain version: DNS and email help people find you, but they are weak anchors. Put a mirror list inside the repo itself and keep offline bundles.
 
-## 0x09 - Brazilian network censorship and Segfault egress
+## 0x09 - Brazilian network censorship and Tor egress
 
 ### the Brazilian control surface
 
@@ -715,89 +713,120 @@ Use multiple routes:
 
 * normal clearnet;
 * Tor Browser with bridges or Snowflake when censorship is the problem;
+* local Tor SOCKS at `127.0.0.1:9050` for command-line tools;
 * alternate DNS only when DNS poisoning is the problem;
 * HTTPS mirrors on different providers;
 * static pages on different domains;
 * local bundles when the wire is dead.
 
-### Segfault.net emergency egress
+### Tor emergency egress
 
-The move I used during the ANATEL/GitHub API mess was Segfault.net.
+The emergency move during a local path failure does not need to be glamorous. Run Tor locally, make sure the SOCKS listener exists, and point the tool that needs egress at `127.0.0.1:9050`.
 
-Not as magic. Not as a heroic trench. Just as a disposable root box with egress outside the local broken path, a public reverse TCP port, and enough room to run a temporary proxy while AGMH pulled the repos out. Ugly? Sure. Effective? Also yes. Welcome to ops.
+This is slower than normal clearnet. Some services rate-limit or dislike Tor exits. Good. That is a tradeoff, not a mystery. The point is not luxury. The point is having a second path when the ordinary Brazilian route is cooked and the clock is louder than your principles.
 
-Segfault login is intentionally stupid-simple, the kind of thing that makes enterprise IAM departments break into hives:
-
-```bash
-ssh root@segfault.net
-# password: segfault
-```
-
-Inside the Segfault box, ask for a public reverse port:
+On Ubuntu, install Tor and the small tools you need to test it:
 
 ```bash
-curl sf/port
+sudo apt update
+sudo apt install -y tor torsocks curl ca-certificates
 ```
 
-It prints something shaped like this:
-
-```text
-Your reverse Port is 83.143.242.45 31343 [83.143.242.45:31343]
-```
-
-Then run a temporary HTTP proxy on that port. I used `gost`. Duct tape with sockets:
+Enable and start the daemon:
 
 ```bash
-gost -L http://:31343
+sudo systemctl enable --now tor
+systemctl status --no-pager tor
 ```
 
-On the workstation, test the GitHub API through that route:
+Tor usually exposes a SOCKS listener on port `9050`. Make the binding explicit so the setup is boring and grep-able:
 
 ```bash
-curl -I \
-  --proxy http://83.143.242.45:31343 \
+sudo cp /etc/tor/torrc "/etc/tor/torrc.backup.$(date +%Y%m%d%H%M%S)"
+sudo sed -i -E 's/^#?SocksPort .*/SocksPort 127.0.0.1:9050/' /etc/tor/torrc
+grep -q '^SocksPort ' /etc/tor/torrc || \
+  echo 'SocksPort 127.0.0.1:9050' | sudo tee -a /etc/tor/torrc
+sudo systemctl restart tor
+```
+
+Check that it is actually listening:
+
+```bash
+ss -ltnp | grep ':9050'
+```
+
+Test the route without leaking DNS through the local resolver. Use `--socks5-hostname`, not plain `--socks5`, so hostname resolution goes through Tor too:
+
+```bash
+curl --socks5-hostname 127.0.0.1:9050 \
+  https://check.torproject.org/api/ip
+
+curl -I --socks5-hostname 127.0.0.1:9050 \
   https://api.github.com/users/extencil
 ```
 
-If that returns sane HTTP headers while the direct Brazilian path is coughing blood, route AGMH through the same proxy:
+If that returns sane HTTP headers while the direct route is coughing blood, route AGMH through the same local SOCKS endpoint:
 
 ```bash
 export GITHUB_TOKEN="source_token_here"
 export GITLAB_TOKEN="destination_token_here"
+export AGMH_PROXY="socks5h://127.0.0.1:9050"
 
 agmh run \
   --config agmh.config.toml \
-  --proxy http://83.143.242.45:31343 \
+  --proxy "$AGMH_PROXY" \
   --verbose
 ```
 
 Or with direct flags:
 
 ```bash
+export AGMH_PROXY="socks5h://127.0.0.1:9050"
+
 agmh run \
   --source https://github.com/YOUR_USER_OR_ORG/ \
   --github-token env:GITHUB_TOKEN \
   --destination https://gitlab.com/YOUR_GITLAB_NAMESPACE \
   --destination-token gitlab:env:GITLAB_TOKEN \
-  --proxy http://83.143.242.45:31343 \
+  --proxy "$AGMH_PROXY" \
   --verbose
 ```
 
-Replace `83.143.242.45:31343` with the IP and port Segfault gives you. Keep the Segfault shell open. Kill the shell or the proxy process and the route dies. Get a new port, update the command, continue. Very high ceremony. Much enterprise. Many diagrams.
+For raw Git checks, use Git's curl proxy support:
+
+```bash
+git -c http.proxy=socks5h://127.0.0.1:9050 \
+  ls-remote https://github.com/YOUR_USER_OR_ORG/PROJECT.git HEAD
+```
+
+You can also export it for tools that honor libcurl-style proxy variables:
+
+```bash
+export ALL_PROXY="socks5h://127.0.0.1:9050"
+export all_proxy="$ALL_PROXY"
+```
+
+Keep the scope tight. Set proxy variables in the shell doing the rescue work, then unset them when you are done:
+
+```bash
+unset ALL_PROXY all_proxy AGMH_PROXY
+```
 
 If TLS verification breaks because the path is being mangled and you understand the risk, AGMH has `--insecure`. That disables certificate verification for API calls and Git HTTPS operations. Use it like a dirty field splint, not like a lifestyle:
 
 ```bash
 agmh run \
   --config agmh.config.toml \
-  --proxy http://83.143.242.45:31343 \
+  --proxy socks5h://127.0.0.1:9050 \
   --insecure \
   --verbose
 ```
 
-This was the whole trick: leave the censored local egress path, fetch my own repositories, push mirrors elsewhere, and stop waiting for a Brazilian route or a platform ticket to become kind. No exploit. No drama. A shell, a proxy, a mirror. Packet goes out, repo comes back, custody loses a little oxygen.
+If Tor itself is blocked, use bridges. Tor Browser and Snowflake are still the easy human-facing path. For the daemon, get current bridge lines from the Tor Project and add the matching `UseBridges` and `ClientTransportPlugin` lines to `/etc/tor/torrc`; do not paste stale bridge examples into your permanent notes and pretend they are infrastructure.
 
-> Plain version: I used Segfault.net as a temporary outside-Brazil egress point. AGMH talks to GitHub through the Segfault proxy, pulls the repos, and pushes mirrors to another forge before the original account or route becomes useless.
+This was the whole trick: leave the broken local egress path, fetch my own repositories, push mirrors elsewhere, and stop waiting for a Brazilian route or a platform ticket to become kind. No exploit. No drama. A local Tor daemon, a SOCKS proxy, a mirror. Packet goes out, repo comes back, custody loses a little oxygen.
+
+> Plain version: run Tor locally, confirm `127.0.0.1:9050` works, point AGMH or Git at `socks5h://127.0.0.1:9050`, pull the repos, and push mirrors before the original account or route becomes useless.
 
 Do not confuse route circumvention with legal immunity. A route is not a shield against law. It is just a path.
 
@@ -962,7 +991,7 @@ Most people do not need exotic infrastructure. They need to stop being lazy with
 
 ### THC public channels
 
-THC has been living this culture longer than most vendor security teams have existed. Public work. Free services. Tools. Weird infrastructure. Useful contempt. Segfault.net gives disposable root boxes. GSocket connects across NAT and firewalls for legitimate access to your own systems. mail.thc.org gives free forwarding aliases. Their older privacy text for rebellions repeats the rule that matters most: shut up, compartmentalize, and do not feed the machine more metadata than necessary.
+THC has been living this culture longer than most vendor security teams have existed. Public work. Free services. Tools. Weird infrastructure. Useful contempt. GSocket connects across NAT and firewalls for legitimate access to your own systems. mail.thc.org gives free forwarding aliases. Their older privacy text for rebellions repeats the rule that matters most: shut up, compartmentalize, and do not feed the machine more metadata than necessary.
 
 If this frequency makes sense, join the public THC channels listed here:
 
@@ -1027,7 +1056,7 @@ This is the debt ledger. Not corporate credits. No velvet rope. Just names on th
 
 **messede**, thanks because through you I found **0x00sec**, and also because this legendary hacker created `ip.thc.org`. Useful little cursed thing.
 
-**Skyper**, thanks for being a root mirror from the underground into the current hacking scene, and for receiving with open arms the vulnerability reports I sent for **Segfault.net** in 2023 and `iq.thc.org` in 2026 ;). Thanks also for giving me `extencil@proton.thc.org`. That address is not just mail. It is scene plumbing.
+**Skyper**, thanks for being a root mirror from the underground into the current hacking scene, and for receiving with open arms the vulnerability reports I sent around THC infrastructure in 2023 and `iq.thc.org` in 2026 ;). Thanks also for giving me `extencil@proton.thc.org`. That address is not just mail. It is scene plumbing.
 
 **Cass Bone**, thanks for contributing ideas and helping improve **AGMH**.
 
@@ -1101,7 +1130,6 @@ https://discord.gg/ircc
 ### THC infrastructure and culture
 
 * https://www.thc.org/
-* https://www.thc.org/segfault/
 * https://www.thc.org/ops/
 * https://t.me/thcorg
 * https://gsocket.io/

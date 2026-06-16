@@ -128,12 +128,12 @@ async function loadMemberFromFilename(
 ): Promise<LoadedMemberProfile> {
   const filepath = path.join(MEMBER_CONTENT_DIR, filename);
   const source = await fs.readFile(filepath, "utf8");
-  const module = await compileMemberProfile(source);
-  const meta = parseMemberProfileMeta(module.frontmatter, filename);
+  const memberModule = await compileMemberProfile(source);
+  const meta = parseMemberProfileMeta(memberModule.frontmatter, filename);
 
   return {
     meta,
-    Content: module.default,
+    Content: memberModule.default,
     filename,
   };
 }

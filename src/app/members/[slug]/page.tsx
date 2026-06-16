@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { MemberProfileLayout } from "@/components/member-profile-layout";
 import { getMemberProfileBySlug, getMemberStaticParams } from "@/lib/members";
 import { pageMetadata } from "@/lib/seo";
-import { useMDXComponents } from "../../../../mdx-components";
+import { getMDXComponents } from "../../../../mdx-components";
 
 type MemberProfilePageProps = {
   params: Promise<{
@@ -51,7 +51,7 @@ export default async function MemberProfilePage({
 
   return (
     <MemberProfileLayout meta={member.meta}>
-      <Content components={useMDXComponents()} />
+      <Content components={getMDXComponents()} />
     </MemberProfileLayout>
   );
 }

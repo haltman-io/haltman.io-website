@@ -5,7 +5,7 @@ export interface BlogPostTag {
   slug: string;
 }
 
-export interface BlogPostAuthor extends AuthorProfile {}
+export type BlogPostAuthor = AuthorProfile;
 
 export interface BlogPostMeta {
   slug: string;

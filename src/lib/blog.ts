@@ -202,12 +202,12 @@ async function getBlogFilenames(): Promise<string[]> {
 async function loadPostFromFilename(filename: string): Promise<LoadedBlogPost> {
   const filepath = path.join(BLOG_CONTENT_DIR, filename);
   const source = await fs.readFile(filepath, "utf8");
-  const module = await compileBlogPost(source);
-  const meta = await parseBlogPostMeta(module.frontmatter, filename);
+  const postModule = await compileBlogPost(source);
+  const meta = await parseBlogPostMeta(postModule.frontmatter, filename);
 
   return {
     meta,
-    Content: module.default,
+    Content: postModule.default,
     filename,
   };
 }

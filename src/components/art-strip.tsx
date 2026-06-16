@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import {
   ChevronLeft,
@@ -45,6 +45,11 @@ type ArtStripProps = {
   layout?: "strip" | "grid";
 };
 
+type VideoDuration = {
+  durationMs: number;
+  src: string;
+};
+
 export function ArtStrip({ showTopNav = true, layout = "strip" }: ArtStripProps) {
   const isGridLayout = layout === "grid";
   const scrollerRef = useRef<HTMLDivElement>(null);
@@ -67,7 +72,7 @@ export function ArtStrip({ showTopNav = true, layout = "strip" }: ArtStripProps)
   const [isPlaying, setIsPlaying] = useState(true);
   const [isAutoAdvanceOn, setIsAutoAdvanceOn] = useState(false);
   const [autoProgress, setAutoProgress] = useState(100);
-  const [videoDurationMs, setVideoDurationMs] = useState<number | null>(null);
+  const [videoDuration, setVideoDuration] = useState<VideoDuration | null>(null);
   const [shareMessage, setShareMessage] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -76,11 +81,25 @@ export function ArtStrip({ showTopNav = true, layout = "strip" }: ArtStripProps)
     [failed]
   );
 
-  const selectedAsset = visibleAssets[selected];
+  const selectedIndex =
+    visibleAssets.length === 0
+      ? 0
+      : Math.min(selected, visibleAssets.length - 1);
+  const selectedAsset = visibleAssets[selectedIndex];
   const selectedIsVideo = useMemo(
     () => (selectedAsset ? isVideo(selectedAsset.src) : false),
     [selectedAsset]
   );
+  const selectedVideoDurationMs =
+    selectedAsset && videoDuration?.src === selectedAsset.src
+      ? videoDuration.durationMs
+      : null;
+  const autoAdvanceActive = isAutoAdvanceOn && visibleAssets.length > 0;
+
+  const resetPreviewTransform = useCallback(() => {
+    setZoom(1);
+    setPan({ x: 0, y: 0 });
+  }, []);
 
   const scroll = (dir: "left" | "right") => {
     scrollerRef.current?.scrollBy({
@@ -108,47 +127,10 @@ export function ArtStrip({ showTopNav = true, layout = "strip" }: ArtStripProps)
     scrollerRef.current.scrollLeft = stripStartScrollLeftRef.current - delta;
   };
 
-  const onStripPointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
+  const onStripPointerUp = () => {
     if (!isStripDragging) return;
     setIsStripDragging(false);
   };
-
-  useEffect(() => {
-    setPan({ x: 0, y: 0 });
-  }, [selected]);
-
-  useEffect(() => {
-    if (zoom <= 1) {
-      setPan({ x: 0, y: 0 });
-    }
-  }, [zoom]);
-
-  useEffect(() => {
-    if (visibleAssets.length === 0) {
-      setSelected(0);
-      setIsAutoAdvanceOn(false);
-      return;
-    }
-
-    if (selected >= visibleAssets.length) {
-      setSelected(visibleAssets.length - 1);
-    }
-  }, [selected, visibleAssets.length]);
-
-  useEffect(() => {
-    if (!selectedAsset || !selectedIsVideo) {
-      setVideoDurationMs(null);
-      return;
-    }
-
-    const video = previewVideoRef.current;
-    if (video && Number.isFinite(video.duration) && video.duration > 0) {
-      setVideoDurationMs(video.duration * 1000);
-      return;
-    }
-
-    setVideoDurationMs(null);
-  }, [selectedAsset, selectedIsVideo]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -168,29 +150,33 @@ export function ArtStrip({ showTopNav = true, layout = "strip" }: ArtStripProps)
     }
 
     handledArtifactParamRef.current = artifactParam;
-    setSelected(index);
-    setDialogOpen(true);
 
     const url = new URL(window.location.href);
     url.searchParams.delete("artifact");
     const nextUrl = `${url.pathname}${url.search ? `?${url.searchParams.toString()}` : ""}${url.hash}`;
     window.history.replaceState({}, "", nextUrl);
-  }, [visibleAssets]);
+
+    const frameId = window.requestAnimationFrame(() => {
+      setSelected(index);
+      resetPreviewTransform();
+      setDialogOpen(true);
+      setVideoDuration(null);
+    });
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, [resetPreviewTransform, visibleAssets]);
 
   useEffect(() => {
-    if (!isAutoAdvanceOn) {
-      setAutoProgress(100);
+    if (!autoAdvanceActive) {
       return;
     }
 
     const currentDelayMs = selectedIsVideo
-      ? (videoDurationMs ?? IMAGE_PREVIEW_DELAY_MS)
+      ? (selectedVideoDurationMs ?? IMAGE_PREVIEW_DELAY_MS)
       : IMAGE_PREVIEW_DELAY_MS;
 
     const tickMs = 100;
     const step = (tickMs / currentDelayMs) * 100;
-
-    setAutoProgress(100);
 
     const timer = window.setInterval(() => {
       setAutoProgress((currentProgress) => {
@@ -206,6 +192,7 @@ export function ArtStrip({ showTopNav = true, layout = "strip" }: ArtStripProps)
           }
 
           autoAdvanceStepsRef.current += 1;
+          setPan({ x: 0, y: 0 });
           return (current + 1) % visibleAssets.length;
         });
 
@@ -214,7 +201,13 @@ export function ArtStrip({ showTopNav = true, layout = "strip" }: ArtStripProps)
     }, tickMs);
 
     return () => window.clearInterval(timer);
-  }, [isAutoAdvanceOn, selected, selectedIsVideo, videoDurationMs, visibleAssets.length]);
+  }, [
+    autoAdvanceActive,
+    selectedIndex,
+    selectedIsVideo,
+    selectedVideoDurationMs,
+    visibleAssets.length,
+  ]);
 
   const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     if (zoom <= 1) return;
@@ -242,35 +235,52 @@ export function ArtStrip({ showTopNav = true, layout = "strip" }: ArtStripProps)
 
   const onWheelZoom = (event: React.WheelEvent<HTMLDivElement>) => {
     event.preventDefault();
-    setZoom((current) => {
-      const next = event.deltaY < 0 ? current + 0.2 : current - 0.2;
-      return Math.max(1, Math.min(3, Number(next.toFixed(2))));
-    });
+    const next = event.deltaY < 0 ? zoom + 0.2 : zoom - 0.2;
+    const nextZoom = Math.max(1, Math.min(3, Number(next.toFixed(2))));
+
+    setZoom(nextZoom);
+
+    if (nextZoom <= 1) {
+      setPan({ x: 0, y: 0 });
+    }
   };
 
-  const zoomIn = () => setZoom((current) => Math.min(3, current + 0.25));
-  const zoomOut = () => setZoom((current) => Math.max(1, current - 0.25));
+  const zoomIn = () => {
+    setZoom(Math.min(3, zoom + 0.25));
+  };
+
+  const zoomOut = () => {
+    const nextZoom = Math.max(1, zoom - 0.25);
+
+    setZoom(nextZoom);
+
+    if (nextZoom <= 1) {
+      setPan({ x: 0, y: 0 });
+    }
+  };
 
   const prevAsset = () => {
     if (visibleAssets.length === 0) return;
-    setSelected((current) =>
-      current === 0 ? visibleAssets.length - 1 : current - 1
+    setSelected(
+      selectedIndex === 0 ? visibleAssets.length - 1 : selectedIndex - 1
     );
-    setZoom(1);
+    resetPreviewTransform();
     setAutoProgress(100);
     setIsPlaying(true);
     setShareMessage("");
+    setVideoDuration(null);
   };
 
   const nextAsset = () => {
     if (visibleAssets.length === 0) return;
-    setSelected((current) =>
-      current === visibleAssets.length - 1 ? 0 : current + 1
+    setSelected(
+      selectedIndex === visibleAssets.length - 1 ? 0 : selectedIndex + 1
     );
-    setZoom(1);
+    resetPreviewTransform();
     setAutoProgress(100);
     setIsPlaying(true);
     setShareMessage("");
+    setVideoDuration(null);
   };
 
   const toggleAutoAdvance = () => {
@@ -379,12 +389,13 @@ export function ArtStrip({ showTopNav = true, layout = "strip" }: ArtStripProps)
           setDialogOpen(open);
           if (open) {
             dialogOpenScrollYRef.current = window.scrollY;
-            setZoom(1);
+            resetPreviewTransform();
             setIsPlaying(true);
             setAutoProgress(100);
             setShareMessage("");
             setIsAutoAdvanceOn(false);
             autoAdvanceStepsRef.current = 0;
+            setVideoDuration(null);
           } else {
             setAutoProgress(100);
             setIsAutoAdvanceOn(false);
@@ -423,6 +434,8 @@ export function ArtStrip({ showTopNav = true, layout = "strip" }: ArtStripProps)
                       return;
                     }
                     setSelected(index);
+                    resetPreviewTransform();
+                    setVideoDuration(null);
                   }}
                   className={
                     isGridLayout
@@ -522,7 +535,10 @@ export function ArtStrip({ showTopNav = true, layout = "strip" }: ArtStripProps)
                     onLoadedMetadata={(event) => {
                       const duration = event.currentTarget.duration;
                       if (Number.isFinite(duration) && duration > 0) {
-                        setVideoDurationMs(duration * 1000);
+                        setVideoDuration({
+                          durationMs: duration * 1000,
+                          src: selectedAsset.src,
+                        });
                       }
                     }}
                     onPlay={() => setIsPlaying(true)}
@@ -631,7 +647,7 @@ export function ArtStrip({ showTopNav = true, layout = "strip" }: ArtStripProps)
               </div>
             </div>
 
-            {isAutoAdvanceOn && (
+            {autoAdvanceActive && (
               <div className="h-1 w-full overflow-hidden rounded-sm bg-[var(--red-border)]">
                 <div
                   className="h-full bg-[var(--red)]"
@@ -644,7 +660,7 @@ export function ArtStrip({ showTopNav = true, layout = "strip" }: ArtStripProps)
             )}
 
             <div className="min-h-4 text-right font-mono text-xs uppercase tracking-[0.12em] text-[var(--muted-foreground)]">
-              {shareMessage || `${Math.round(zoom * 100)}% · ${visibleAssets.length > 0 ? selected + 1 : 0}/${visibleAssets.length}${isAutoAdvanceOn ? " · auto" : ""}`}
+              {shareMessage || `${Math.round(zoom * 100)}% · ${visibleAssets.length > 0 ? selectedIndex + 1 : 0}/${visibleAssets.length}${autoAdvanceActive ? " · auto" : ""}`}
             </div>
           </div>
         </DialogContent>

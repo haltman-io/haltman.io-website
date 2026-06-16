@@ -36,7 +36,7 @@ export function BlogArchive({ posts }: { posts: BlogPostEntry[] }) {
         post.description.toLowerCase().includes(q)
       );
     });
-  }, [activeCategory, searchQuery]);
+  }, [activeCategory, posts, searchQuery]);
 
   const countForCategory = (cat: string) =>
     cat === "all"

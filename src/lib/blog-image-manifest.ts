@@ -3,10 +3,14 @@ import "server-only";
 import fs from "node:fs";
 import path from "node:path";
 
-const ROOT_DIR = process.cwd();
-const BLOG_CONTENT_DIR = path.join(ROOT_DIR, "src", "content", "blog");
-const PUBLIC_DIR = path.join(ROOT_DIR, "public");
-const MANIFEST_PATH = path.join(ROOT_DIR, ".generated", "blog-image-manifest.json");
+const PROJECT_ROOT = process.cwd();
+const BLOG_CONTENT_DIR = path.join(process.cwd(), "src", "content", "blog");
+const PUBLIC_DIR = path.join(process.cwd(), "public");
+const MANIFEST_PATH = path.join(
+  process.cwd(),
+  ".generated",
+  "blog-image-manifest.json",
+);
 const SUPPORTED_IMAGE_EXTENSIONS = new Set([
   ".png",
   ".jpg",
@@ -69,20 +73,18 @@ function createSourcePathCandidates(
   if (pathPart.startsWith("/")) {
     const publicAssetPath = path.join(PUBLIC_DIR, pathPart.slice(1));
 
-    return [normalizePath(path.relative(ROOT_DIR, publicAssetPath))];
+    return [normalizePath(path.relative(PROJECT_ROOT, publicAssetPath))];
   }
 
   const sourceFilePath = path.join(BLOG_CONTENT_DIR, sourceFilename);
-  const relativeCandidate = normalizePath(
-    path.relative(ROOT_DIR, path.resolve(path.dirname(sourceFilePath), pathPart)),
-  );
-  const rootCandidate = normalizePath(
-    path.relative(ROOT_DIR, path.resolve(ROOT_DIR, pathPart)),
+  const sourceRelativeCandidate = normalizePath(
+    path.relative(
+      PROJECT_ROOT,
+      path.resolve(path.dirname(sourceFilePath), pathPart),
+    ),
   );
 
-  return relativeCandidate === rootCandidate
-    ? [relativeCandidate]
-    : [relativeCandidate, rootCandidate];
+  return [sourceRelativeCandidate];
 }
 
 function loadManifest(): BlogImageManifest | null {

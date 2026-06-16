@@ -3,8 +3,8 @@ import type { MDXComponents } from "mdx/types";
 import { resolveBlogImageSrc } from "@/lib/blog-image-manifest";
 import {
   ContentImage,
+  getMDXComponents,
   PostImage,
-  useMDXComponents,
 } from "../../mdx-components";
 
 function resolveSrc(
@@ -15,7 +15,7 @@ function resolveSrc(
 }
 
 export function createBlogMDXComponents(sourceFilename: string): MDXComponents {
-  return useMDXComponents({
+  return getMDXComponents({
     img: (props) => (
       <ContentImage {...props} src={resolveSrc(props.src, sourceFilename)} />
     ),

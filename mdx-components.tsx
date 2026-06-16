@@ -46,7 +46,11 @@ function createHeading(
     return (
       <Tag
         id={resolvedId}
-        className={cn(baseClassName, className)}
+        className={cn(
+          "max-w-full [overflow-wrap:anywhere]",
+          baseClassName,
+          className,
+        )}
         {...props}
       >
         {children}
@@ -56,7 +60,7 @@ function createHeading(
 }
 
 const paragraphClassName =
-  "mb-6 text-[1rem] leading-8 text-[var(--muted-foreground)] sm:text-[1.03rem]";
+  "mb-6 max-w-full text-[1rem] leading-8 text-[var(--muted-foreground)] [overflow-wrap:anywhere] sm:text-[1.03rem]";
 
 type ContentImageProps = ComponentPropsWithoutRef<"img">;
 
@@ -186,6 +190,7 @@ const components: MDXComponents = {
     <ul
       className={cn(
         "mb-8 list-disc space-y-3 pl-6 text-[1rem] leading-8 text-[var(--muted-foreground)] marker:text-[var(--red)] sm:text-[1.03rem]",
+        "[overflow-wrap:anywhere]",
         className,
       )}
       {...props}
@@ -195,16 +200,20 @@ const components: MDXComponents = {
     <ol
       className={cn(
         "mb-8 list-decimal space-y-3 pl-6 text-[1rem] leading-8 text-[var(--muted-foreground)] marker:font-mono marker:text-[var(--red)] sm:text-[1.03rem]",
+        "[overflow-wrap:anywhere]",
         className,
       )}
       {...props}
     />
   ),
   li: ({ className, ...props }) => (
-    <li className={cn("pl-1 leading-7", className)} {...props} />
+    <li
+      className={cn("min-w-0 max-w-full pl-1 leading-7 [overflow-wrap:anywhere]", className)}
+      {...props}
+    />
   ),
   a: ({ className, ...props }) => (
-    <a className={cn("accent-link", className)} {...props} />
+    <a className={cn("accent-link [overflow-wrap:anywhere]", className)} {...props} />
   ),
   strong: ({ className, ...props }) => (
     <strong className={cn("font-semibold text-white", className)} {...props} />
@@ -213,6 +222,7 @@ const components: MDXComponents = {
     <blockquote
       className={cn(
         "mb-8 border-l-2 border-[var(--red)] bg-[rgba(255,42,42,0.05)] px-5 py-4 text-[1rem] leading-8 text-[var(--foreground)] shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] sm:text-[1.03rem]",
+        "[overflow-wrap:anywhere]",
         className,
       )}
       {...props}
@@ -292,11 +302,17 @@ const components: MDXComponents = {
   PostImage,
 };
 
-export function useMDXComponents(
+export function getMDXComponents(
   overrides: MDXComponents = {},
 ): MDXComponents {
   return {
     ...components,
     ...overrides,
   };
+}
+
+export function useMDXComponents(
+  overrides: MDXComponents = {},
+): MDXComponents {
+  return getMDXComponents(overrides);
 }

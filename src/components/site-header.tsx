@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ArrowUpRight, Menu, X } from "lucide-react";
 import * as simpleIcons from "simple-icons";
 import { socialLinks } from "@/config/links";
@@ -48,11 +48,12 @@ const headerSocialLinks = socialLinks.filter(
 
 export function SiteHeader() {
   const pathname = usePathname();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    setMobileMenuOpen(false);
-  }, [pathname]);
+  const [mobileMenuState, setMobileMenuState] = useState({
+    open: false,
+    pathname,
+  });
+  const mobileMenuOpen =
+    mobileMenuState.pathname === pathname && mobileMenuState.open;
 
   const isActiveLink = (href: string) => {
     return href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -146,7 +147,12 @@ export function SiteHeader() {
 
           <button
             type="button"
-            onClick={() => setMobileMenuOpen((v) => !v)}
+            onClick={() =>
+              setMobileMenuState((current) => ({
+                open: current.pathname === pathname ? !current.open : true,
+                pathname,
+              }))
+            }
             className="inline-flex size-12 shrink-0 items-center justify-center border border-[var(--red-border)] bg-[linear-gradient(180deg,rgba(14,14,14,0.96),rgba(7,7,7,1))] text-[var(--foreground)] shadow-[0_12px_28px_rgba(0,0,0,0.24)] transition-colors hover:border-[rgba(255,42,42,0.45)] lg:hidden"
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-navigation"
