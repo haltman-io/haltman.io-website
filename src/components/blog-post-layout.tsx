@@ -104,7 +104,7 @@ export function BlogPostLayout({
                   </header>
 
                   {/* Article Body — unique content per post */}
-                  <div className="min-w-0 w-full max-w-full [overflow-wrap:anywhere] [&_a]:[overflow-wrap:anywhere] [&_a]:[word-break:break-word] [&_li]:min-w-0 [&_li]:max-w-full [&_li]:[overflow-wrap:anywhere] [&_li]:text-justify [&_p]:max-w-full [&_p]:[overflow-wrap:anywhere] [&_p]:text-justify">
+                  <div className="min-w-0 w-full max-w-full [overflow-wrap:anywhere] [&_a]:[overflow-wrap:anywhere] [&_a]:[word-break:break-word] [&_li]:min-w-0 [&_li]:max-w-full [&_li]:[overflow-wrap:anywhere] [&_p]:max-w-full [&_p]:[overflow-wrap:anywhere]">
                     {children}
                   </div>
                 </article>
